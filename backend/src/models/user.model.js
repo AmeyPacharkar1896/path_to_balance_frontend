@@ -1,8 +1,12 @@
-import { mongoose } from 'mongoose';
-const { Schema } = mongoose;
+import { Schema, model } from 'mongoose';
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema({
   fullName: {
+    type: String,
+    required: true
+  },
+  userName: {
     type: String,
     required: true
   },
@@ -17,29 +21,42 @@ const userSchema = new Schema({
   },
   authType: {
     type: String,
-    enum: ['jwt', 'oauth'],
+    enum: ['email-password', 'oauth'],
     required: true,
+    default: "email-password",
   },
   role: {
     type: String,
     enum: ['admin', 'user'],
     default: "user",
   },
-  profilePicture: {
+  avatar: {
     type: String,
+    default: "",
   },
-  createdAt: { 
-    type: Date, 
-    default: Date.now 
+  mentalHealthScore: {
+    type: Number,
+    default: 0,
+    max: 10
   },
-  mentalHealthScore:{
-    type:Number,
-    default:0,
-    max:10
+  isLoggedIn: {
+    type: Boolean,
+    default: false,
   }
-  
 }, {
   timestamps: true
 });
 
-export default User = mongoose.model('User', userSchema);
+userSchema.pre('save', async function (next) {
+
+  if (!this.isModified('password')) return;
+
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password)
+}
+
+export const User = model('User', userSchema);
