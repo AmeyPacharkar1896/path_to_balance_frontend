@@ -1,32 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/home/presentation/provider/home_provider.dart';
+import 'package:frontend/features/tasks/presentation/pages/task_content.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/features/home/presentation/provider/home_provider.dart';
+import 'package:frontend/features/home/presentation/widgets/dashboard_content.dart';
+import 'package:frontend/features/home/presentation/widgets/profile_content.dart';
 
-class HomeBottomNavigationBar extends StatelessWidget {
-  const HomeBottomNavigationBar({Key? key}) : super(key: key);
-  
+class HomeNavBar extends StatelessWidget {
+  const HomeNavBar({Key? key}) : super(key: key);
+
+  // Define your pages so the nav bar can send the widget directly.
+  static const List<Widget> pages = [
+    DashboardContent(),
+    TaskContent(),
+    ProfileContent(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Consumer<HomeProvider>(
       builder: (context, provider, child) {
         return BottomNavigationBar(
-          currentIndex: provider.currentIndex,
+          currentIndex: provider.selectedIndex,
           onTap: (index) {
-            provider.setCurrentIndex(index);
+            // Update the provider with the new widget and index.
+            provider.setCurrentWidgetAndIndex(
+              widget: pages[index],
+              index: index,
+            );
           },
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.dashboard),
-              label: "DashBoard",
+              label: 'Dashboard',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.task),
-              label: "Task",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: "Profile",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Tasks'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ],
         );
       },

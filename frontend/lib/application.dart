@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/home/presentation/pages/home_page.dart';
-import 'package:frontend/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:frontend/global_provider.dart';
+import 'package:frontend/material_app.dart';
 
 class Application extends StatelessWidget {
+  const Application({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Your App Title',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
-      // Set OnboardingPage as the initial screen
-      home: OnboardingPage(),
-      routes: {
-        '/home': (context) => HomePage(), // Define your HomePage widget
-      },
-    );
+    return GlobalProvider(child: MaterialAppWidget());
   }
 }

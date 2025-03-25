@@ -1,5 +1,3 @@
-// frontend/features/home/presentation/widgets/profile_edit_dialog.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/profile_provider.dart';
@@ -36,23 +34,67 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Edit Profile"),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: const Text(
+        "Edit Profile",
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.indigo,
+        ),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: "Name"),
+              decoration: InputDecoration(
+                labelText: "Name",
+                labelStyle: const TextStyle(color: Colors.indigo),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.indigo.shade200),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.indigo),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
             ),
+            const SizedBox(height: 12),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: "Email"),
+              decoration: InputDecoration(
+                labelText: "Email",
+                labelStyle: const TextStyle(color: Colors.indigo),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.indigo.shade200),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.indigo),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
             ),
+            const SizedBox(height: 12),
             TextField(
               controller: _bioController,
-              decoration: const InputDecoration(labelText: "Bio"),
               maxLines: 3,
+              decoration: InputDecoration(
+                labelText: "Bio",
+                labelStyle: const TextStyle(color: Colors.indigo),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.indigo.shade200),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.indigo),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
             ),
           ],
         ),
@@ -60,11 +102,15 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text("Cancel"),
+          child: const Text(
+            "Cancel",
+            style: TextStyle(color: Colors.indigo),
+          ),
         ),
         ElevatedButton(
           onPressed: () {
-            final profileProvider = Provider.of<ProfileProvider>(context, listen: false);
+            final profileProvider =
+                Provider.of<ProfileProvider>(context, listen: false);
             profileProvider.updateProfile(
               name: _nameController.text,
               email: _emailController.text,
@@ -72,6 +118,10 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
             );
             Navigator.of(context).pop();
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.indigo,
+            foregroundColor: Colors.white,
+          ),
           child: const Text("Save"),
         ),
       ],

@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/home/presentation/pages/home_screen.dart';
 import 'package:frontend/features/home/presentation/provider/home_provider.dart';
 import 'package:frontend/features/home/presentation/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class GlobalProvider extends StatelessWidget {
+  const GlobalProvider({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => HomeProvider()),
-        ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (context) => HomeProvider()),
+        ChangeNotifierProvider(create: (context) => ProfileProvider()),
       ],
-      child: const HomeScreen(),
+      child: child,
     );
   }
 }
