@@ -138,7 +138,7 @@ const logout = asyncHandler(async (req, res) => {
   }
 
   await User.findByIdAndUpdate(
-    { _id: await id },
+    { _id: id },
     {
       $set: {
         isLoggedIn: false,
