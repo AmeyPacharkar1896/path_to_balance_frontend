@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'questionary_page.dart';
-import 'daily_tasks_page.dart';
-import 'weekly_tasks_page.dart';
-import 'previous_assessments_page.dart';
+import 'package:frontend/features/tasks/presentation/widgest/tasks_tiles.dart';
+import 'package:frontend/routes/app_routes.dart';
 
 class TaskContent extends StatelessWidget {
   const TaskContent({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,81 +38,26 @@ class TaskContent extends StatelessWidget {
           ),
           elevation: 4,
           child: ListView(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.question_answer, color: Colors.indigo),
-                title: const Text(
-                  "Questionnaire",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.indigo,
-                  ),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.indigo),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const QuestionaryPage()),
-                  );
-                },
+            children: const [
+              TaskTile(
+                icon: Icons.question_answer,
+                label: "Questionnaire",
+                routeName: AppRoutes.questionary,
               ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.today, color: Colors.indigo),
-                title: const Text(
-                  "Daily Tasks",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.indigo,
-                  ),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.indigo),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const DailyTasksPage()),
-                  );
-                },
+              TaskTile(
+                icon: Icons.today,
+                label: "Daily Tasks",
+                routeName: AppRoutes.dailyTasks,
               ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.calendar_view_week, color: Colors.indigo),
-                title: const Text(
-                  "Weekly Tasks",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.indigo,
-                  ),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.indigo),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const WeeklyTasksPage()),
-                  );
-                },
+              TaskTile(
+                icon: Icons.calendar_view_week,
+                label: "Weekly Tasks",
+                routeName: AppRoutes.weeklyTasks,
               ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.history, color: Colors.indigo),
-                title: const Text(
-                  "Previous Assessments",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.indigo,
-                  ),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.indigo),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const PreviousAssessmentsPage()),
-                  );
-                },
+              TaskTile(
+                icon: Icons.history,
+                label: "Previous Assessments",
+                routeName: AppRoutes.previousAssessments,
               ),
             ],
           ),

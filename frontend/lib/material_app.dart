@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/home/presentation/pages/home_screen.dart';
-import 'package:frontend/features/onboarding/presentation/pages/onboarding_page.dart';
+import 'package:frontend/routes/app_routes.dart';
 
 class MaterialAppWidget extends StatelessWidget {
   const MaterialAppWidget({super.key});
@@ -14,10 +13,8 @@ class MaterialAppWidget extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       // scaffoldMessengerKey: scaffoldMessengerKey, // Assign the key
       // theme: themeData, // Use the theme from the provider
-      home: OnboardingPage(),
-      routes: {
-        '/home': (context) => HomeScreen(), // Define your HomePage widget
-      },
+      initialRoute: AppRoutes.onboarding,
+      routes: AppRoutes.routes,
     );
   }
 }
