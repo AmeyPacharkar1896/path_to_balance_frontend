@@ -24,12 +24,12 @@ class DashboardContent extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.lightBlue.shade50, Colors.lightBlue.shade100],
+          colors: [Colors.indigo.shade100, Colors.indigo.shade50],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
       ),
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,29 +39,29 @@ class DashboardContent extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              elevation: 2,
-              color: Colors.white,
-              child: const Padding(
-                padding: EdgeInsets.all(20),
+              elevation: 4,
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
                 child: Row(
                   children: [
                     const Icon(Icons.favorite, color: Colors.pinkAccent, size: 40),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: const [
                           Text(
                             "Daily Affirmation",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black87),
+                                color: Colors.indigo),
                           ),
                           SizedBox(height: 8),
                           Text(
                             "You are strong, resilient, and capable of overcoming challenges.",
-                            style: TextStyle(fontSize: 16, color: Colors.black54),
+                            style: TextStyle(fontSize: 16, color: Colors.black87),
                           ),
                         ],
                       ),
@@ -73,8 +73,8 @@ class DashboardContent extends StatelessWidget {
             const SizedBox(height: 16),
             // Progress Chart Card
             Card(
-              margin: const EdgeInsets.symmetric(vertical: 16),
-              elevation: 3,
+              margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              elevation: 4,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -88,7 +88,7 @@ class DashboardContent extends StatelessWidget {
                         LineChartBarData(
                           spots: spots,
                           isCurved: true,
-                          color: Colors.lightBlue,
+                          color: Colors.indigo,
                           barWidth: 3,
                           dotData: FlDotData(show: true),
                         ),
@@ -105,7 +105,11 @@ class DashboardContent extends StatelessWidget {
                                 final dateParts = assessments[index]["date"]!.split(' ');
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
-                                  child: Text('${dateParts[0]} ${dateParts[1]}'),
+                                  child: Text(
+                                    '${dateParts[0]} ${dateParts[1]}',
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.indigo),
+                                  ),
                                 );
                               } else {
                                 return const Text('');
@@ -118,7 +122,10 @@ class DashboardContent extends StatelessWidget {
                             showTitles: true,
                             reservedSize: 40,
                             getTitlesWidget: (value, meta) {
-                              return Text(value.toInt().toString());
+                              return Text(
+                                value.toInt().toString(),
+                                style: const TextStyle(fontSize: 14, color: Colors.indigo),
+                              );
                             },
                           ),
                         ),
@@ -130,65 +137,62 @@ class DashboardContent extends StatelessWidget {
                 ),
               ),
             ),
-            const Text(
-              'Past Assessments',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                'Past Assessments',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.indigo),
+              ),
             ),
             const SizedBox(height: 16),
-            // List of Assessment Cards
-            Expanded(
-              child: ListView.builder(
-                itemCount: assessments.length,
-                itemBuilder: (context, index) {
-                  final assessment = assessments[index];
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          // Icon for assessment status
-                          const CircleAvatar(
-                            backgroundColor: Colors.lightBlue,
-                            child: Icon(Icons.check, color: Colors.white),
+            // Assessment Cards List using Column
+            Column(
+              children: assessments.map((assessment) {
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 16, left: 8, right: 8),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        // Icon for assessment status
+                        const CircleAvatar(
+                          backgroundColor: Colors.indigo,
+                          child: Icon(Icons.check, color: Colors.white),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Assessment on ${assessment["date"]}",
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.indigo),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Score: ${assessment["score"]}",
+                                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "Feedback: ${assessment["feedback"]}",
+                                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Assessment on ${assessment["date"]}",
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "Score: ${assessment["score"]}",
-                                  style: const TextStyle(
-                                      fontSize: 16, color: Colors.black54),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "Feedback: ${assessment["feedback"]}",
-                                  style: const TextStyle(
-                                      fontSize: 16, color: Colors.black54),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              }).toList(),
             ),
           ],
         ),

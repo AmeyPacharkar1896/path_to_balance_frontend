@@ -16,12 +16,12 @@ class HomeBottomNavigationBar extends StatelessWidget {
           },
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
+              icon: Icon(Icons.dashboard),
+              label: "DashBoard",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.featured_play_list),
-              label: "Features",
+              icon: Icon(Icons.task),
+              label: "Task",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
