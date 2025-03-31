@@ -1,4 +1,4 @@
-// lib/modules/auth/view/auth_screen.dart
+// lib/modules/auth/view/registration_page.dart
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/view/widgets/custom_button.dart';
@@ -8,13 +8,15 @@ import 'package:frontend/modules/auth/provider/auth_provider.dart';
 import 'package:frontend/modules/auth/provider/auth_screen_state.dart';
 import 'package:frontend/routes/app_routes.dart';
 
-class AuthScreen extends StatelessWidget {
-  AuthScreen({Key? key}) : super(key: key);
+class RegistrationPage extends StatelessWidget {
+  RegistrationPage({Key? key}) : super(key: key);
 
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  Future<void> _login(BuildContext context) async {
+  Future<void> _register(BuildContext context) async {
     final authScreenState =
         Provider.of<AuthScreenState>(context, listen: false);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -23,12 +25,16 @@ class AuthScreen extends StatelessWidget {
     authScreenState.setError(null);
 
     try {
-      await authProvider.login(
-        _usernameController.text.trim(),
+      await authProvider.signup(
+        _fullNameController.text.trim(),
+        _userNameController.text.trim(),
+        _emailController.text.trim(),
         _passwordController.text,
       );
-      if (!authProvider.isAuthenticated) {
-        authScreenState.setError('Invalid credentials. Please try again.');
+      if (authProvider.isAuthenticated) {
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      } else {
+        authScreenState.setError('Registration failed. Please try again.');
       }
     } catch (e) {
       authScreenState.setError('An error occurred: $e');
@@ -39,17 +45,10 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('inside auth screen');
-    final authProvider = Provider.of<AuthProvider>(context);
-    if (authProvider.isAuthenticated) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
-      });
-    }
-
+    log('inside registration page');
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Authentication"),
+        title: const Text("Register"),
         centerTitle: true,
       ),
       body: Padding(
@@ -62,8 +61,18 @@ class AuthScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 24.0),
                   CustomTextField(
-                    controller: _usernameController,
+                    controller: _fullNameController,
+                    label: "Full Name",
+                  ),
+                  const SizedBox(height: 16.0),
+                  CustomTextField(
+                    controller: _userNameController,
                     label: "Username",
+                  ),
+                  const SizedBox(height: 16.0),
+                  CustomTextField(
+                    controller: _emailController,
+                    label: "Email",
                   ),
                   const SizedBox(height: 16.0),
                   CustomTextField(
@@ -82,16 +91,16 @@ class AuthScreen extends StatelessWidget {
                   authScreenState.isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : CustomButton(
-                          text: "Login",
-                          onPressed: () => _login(context),
+                          text: "Register",
+                          onPressed: () => _register(context),
                         ),
                   const SizedBox(height: 16.0),
                   TextButton(
                     onPressed: () {
                       Navigator.pushReplacementNamed(
-                          context, AppRoutes.registration);
+                          context, AppRoutes.authScreen);
                     },
-                    child: const Text("Don't have an account? Register"),
+                    child: const Text("Already have an account? Login"),
                   ),
                 ],
               ),

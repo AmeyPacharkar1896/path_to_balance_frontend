@@ -1,8 +1,8 @@
 // lib/modules/auth/provider/auth_provider.dart
-
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/models/user_model.dart';
 import 'package:frontend/modules/auth/service/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider extends ChangeNotifier {
   UserModel? _user;
@@ -12,9 +12,10 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> signup(String fullName, String userName, String email, String password) async {
     final user = await AuthService.signup(fullName, userName, email, password);
-    // Depending on your flow, you might want to log the user in immediately after signup.
     if (user != null) {
       _user = user;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
       notifyListeners();
     }
   }
@@ -23,6 +24,8 @@ class AuthProvider extends ChangeNotifier {
     final user = await AuthService.login(userName, password);
     if (user != null) {
       _user = user;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
       notifyListeners();
     }
   }
@@ -32,6 +35,8 @@ class AuthProvider extends ChangeNotifier {
       final success = await AuthService.logout(_user!.id);
       if (success) {
         _user = null;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', false);
         notifyListeners();
       }
     }
