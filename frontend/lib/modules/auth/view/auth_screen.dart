@@ -1,5 +1,3 @@
-// lib/modules/auth/view/auth_screen.dart
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/view/widgets/custom_button.dart';
 import 'package:frontend/modules/auth/view/widgets/custom_text_field.dart';
@@ -11,6 +9,7 @@ import 'package:frontend/routes/app_routes.dart';
 class AuthScreen extends StatelessWidget {
   AuthScreen({Key? key}) : super(key: key);
 
+  // Create controllers as final fields.
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -39,7 +38,6 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('inside auth screen');
     final authProvider = Provider.of<AuthProvider>(context);
     if (authProvider.isAuthenticated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -49,54 +47,69 @@ class AuthScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Authentication"),
+        title: const Text("Login"),
         centerTitle: true,
+        backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+        
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Consumer<AuthScreenState>(
-          builder: (context, authScreenState, child) {
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 24.0),
-                  CustomTextField(
-                    controller: _usernameController,
-                    label: "Username",
-                  ),
-                  const SizedBox(height: 16.0),
-                  CustomTextField(
-                    controller: _passwordController,
-                    label: "Password",
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 24.0),
-                  if (authScreenState.errorMessage != null)
-                    Text(
-                      authScreenState.errorMessage!,
-                      style: const TextStyle(color: Colors.red, fontSize: 16.0),
-                      textAlign: TextAlign.center,
+      body: Container(
+        padding: const EdgeInsets.all(24.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.indigo.shade100, Colors.indigo.shade50],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Consumer<AuthScreenState>(
+              builder: (context, authScreenState, child) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    CustomTextField(
+                      controller: _usernameController,
+                      label: "Username",
                     ),
-                  const SizedBox(height: 16.0),
-                  authScreenState.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : CustomButton(
-                          text: "Login",
-                          onPressed: () => _login(context),
-                        ),
-                  const SizedBox(height: 16.0),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(
-                          context, AppRoutes.registration);
-                    },
-                    child: const Text("Don't have an account? Register"),
-                  ),
-                ],
-              ),
-            );
-          },
+                    const SizedBox(height: 16),
+                    CustomTextField(
+                      controller: _passwordController,
+                      label: "Password",
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 24),
+                    if (authScreenState.errorMessage != null)
+                      Text(
+                        authScreenState.errorMessage!,
+                        style: const TextStyle(
+                            color: Colors.red, fontSize: 16.0),
+                        textAlign: TextAlign.center,
+                      ),
+                    const SizedBox(height: 16),
+                    authScreenState.isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : CustomButton(
+                            text: "Login",
+                            onPressed: () => _login(context),
+                          ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                            context, AppRoutes.registration);
+                      },
+                      child: const Text(
+                        "Don't have an account? Register",
+                        style: TextStyle(color: Colors.indigo),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

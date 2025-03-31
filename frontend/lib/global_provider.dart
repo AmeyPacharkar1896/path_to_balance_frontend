@@ -1,8 +1,8 @@
 // lib/global_provider.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/modules/home/view_model/home_provider.dart';
-import 'package:frontend/modules/home/view_model/profile_provider.dart';
+import 'package:frontend/modules/home/provider/home_provider.dart';
+import 'package:frontend/modules/home/provider/profile_provider.dart';
 import 'package:frontend/modules/auth/provider/auth_provider.dart';
 import 'package:frontend/modules/auth/provider/auth_screen_state.dart';
 
