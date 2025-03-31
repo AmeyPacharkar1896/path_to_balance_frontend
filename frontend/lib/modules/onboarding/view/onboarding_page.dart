@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/onboarding/helpers/onboarding_helpers.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:frontend/routes/app_routes.dart'; // Import the routes
+import 'package:frontend/routes/app_routes.dart';
+import 'package:provider/provider.dart';
+import 'package:frontend/modules/auth/provider/auth_provider.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Check if the user is already authenticated.
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    if (authProvider.isAuthenticated) {
+      // Delay the navigation until after build is complete.
+      Future.microtask(() {
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      });
+      return const SizedBox.shrink();
+    }
     return IntroductionScreen(
       pages: [
         buildOnboardingPageViewModel(
@@ -49,10 +60,19 @@ class OnboardingPage extends StatelessWidget {
         ),
       ],
       onDone: () {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+        // Check the auth state again at the time of completion.
+        if (authProvider.isAuthenticated) {
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        } else {
+          Navigator.pushReplacementNamed(context, AppRoutes.auth);
+        }
       },
       onSkip: () {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+        if (authProvider.isAuthenticated) {
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        } else {
+          Navigator.pushReplacementNamed(context, AppRoutes.auth);
+        }
       },
       showSkipButton: true,
       skip: const Text("Skip"),
