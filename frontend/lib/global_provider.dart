@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/home/presentation/provider/home_provider.dart';
-import 'package:frontend/features/home/presentation/provider/profile_provider.dart';
+import 'package:frontend/modules/home/view_model/home_provider.dart';
+import 'package:frontend/modules/home/view_model/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 class GlobalProvider extends StatelessWidget {

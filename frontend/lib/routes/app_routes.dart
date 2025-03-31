@@ -1,12 +1,12 @@
 // frontend/routes/app_routes.dart
 import 'package:flutter/material.dart';
-import 'package:frontend/features/home/presentation/pages/home_screen.dart';
-import 'package:frontend/features/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:frontend/features/tasks/presentation/pages/task_content.dart';
-import 'package:frontend/features/tasks/presentation/pages/questionary_page.dart';
-import 'package:frontend/features/tasks/presentation/pages/daily_tasks_page.dart';
-import 'package:frontend/features/tasks/presentation/pages/weekly_tasks_page.dart';
-import 'package:frontend/features/tasks/presentation/pages/previous_assessments_page.dart';
+import 'package:frontend/modules/home/view/home_screen.dart';
+import 'package:frontend/modules/onboarding/view/onboarding_page.dart';
+import 'package:frontend/modules/tasks/pages/task_content.dart';
+import 'package:frontend/modules/tasks/pages/questionary_page.dart';
+import 'package:frontend/modules/tasks/pages/daily_tasks_page.dart';
+import 'package:frontend/modules/tasks/pages/weekly_tasks_page.dart';
+import 'package:frontend/modules/tasks/pages/previous_assessments_page.dart';
 
 class AppRoutes {
   static const String onboarding = '/';
