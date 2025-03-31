@@ -43,7 +43,7 @@ const addQuestionnaire = asyncHandler(
 const getAllQuestionnaires = asyncHandler(
   async (req, res) => {
     const questionnaires = await Questionnaire.find()
-    // .populate('content');
+    .populate('content');
     if (!questionnaires) {
       throw new ApiError(404, "Questionnaires not found");
     }
@@ -65,7 +65,7 @@ const getOneQuestionnaire = asyncHandler(
   async (req, res) => {
     const questionnaireId = req.params.id;
     const questionnaire = await Questionnaire.findById(questionnaireId)
-    // .populate('content');
+    .populate('content');
 
     if (!questionnaire) {
       throw new ApiError(404, "Questionnaire not found");
