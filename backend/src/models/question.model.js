@@ -1,4 +1,4 @@
-import { Schema, models, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const questionSchema = new Schema({
   question: {
@@ -8,16 +8,20 @@ const questionSchema = new Schema({
   options: {
     type: {
       optionOne: {
-        type: String
+        type: String,
+        default:"Not at All"
       },
       optionTwo: {
-        type: String
+        type: String,
+        default: "Several days"
       },
       optionThree: {
-        type: String
+        type: String,
+        default:"More than half the days"
       },
       optionFour: {
-        type: String
+        type: String,
+        default:"Nearly everyday"
       }
     }
   }

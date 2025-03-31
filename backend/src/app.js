@@ -17,9 +17,16 @@ app.use(express.static('public'));
 //routes import
 
 import userRouter from './routes/user.routes.js';
+import questionnaireRouter from './routes/questionnaire.routes.js'
+import questionRouter from './routes/question.routes.js'
 
 // routes declaration
 
-app.use('/api/v1/users', userRouter)
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/queationnaire', questionnaireRouter);
+app.use('/api/v1/question', questionRouter);
+
+
+//questionnaire routes
 
 export { app };
