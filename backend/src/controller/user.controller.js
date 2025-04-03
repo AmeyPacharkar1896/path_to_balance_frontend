@@ -148,20 +148,29 @@ const logout = asyncHandler(async (req, res) => {
   }
   );
 
-
-
-  // const options = {
-  //   httpOnly: true,
-  //   secure: true,
-  // };
-
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "User logged out succesfully"));
-})
+});
+
+const getLoggedInUser = asyncHandler(
+  async (req, res) => {
+    const { id } = req.body;
+    const user = await User.findById(id);
+
+    if(!user){
+      throw new ApiError(404, "User not found");
+    }
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, {user:user}, "User fetched succesfully."));
+  }
+)
 
 export {
   signup,
   login,
-  logout
+  logout,
+  getLoggedInUser
 }
