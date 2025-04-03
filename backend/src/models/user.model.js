@@ -39,6 +39,12 @@ const userSchema = new Schema({
     default: 0,
     max: 10
   },
+  pastAssesmentsScore:[
+    {
+      type: Number,
+      default: 0,
+    }
+  ],
   isLoggedIn: {
     type: Boolean,
     default: false,
