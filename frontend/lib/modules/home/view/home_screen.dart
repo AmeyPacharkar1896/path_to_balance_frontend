@@ -35,7 +35,16 @@ class _HomeScreenState extends State<HomeScreen> {
           //   backgroundColor: Colors.indigo,
           //   foregroundColor: Colors.white,
           // ),
-          body: provider.currentWidget,
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.indigo.shade100, Colors.indigo.shade50],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: provider.currentWidget,
+          ),
           bottomNavigationBar: const HomeNavBar(),
         );
       },

@@ -1,3 +1,4 @@
+// lib/modules/home/view/widgets/profile_content.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/home/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
@@ -5,8 +6,27 @@ import 'profile_edit_dialog.dart';
 import 'package:frontend/modules/auth/provider/auth_provider.dart';
 import 'package:frontend/routes/app_routes.dart';
 
-class ProfileContent extends StatelessWidget {
+class ProfileContent extends StatefulWidget {
   const ProfileContent({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileContent> createState() => _ProfileContentState();
+}
+
+class _ProfileContentState extends State<ProfileContent> {
+  @override
+  void initState() {
+    super.initState();
+    // Once the widget is built, refresh the user data.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final profileProvider = Provider.of<ProfileProvider>(
+        context,
+        listen: false,
+      );
+      await profileProvider.refreshProfile(authProvider);
+    });
+  }
 
   Future<void> _logout(BuildContext context) async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -17,12 +37,6 @@ class ProfileContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profileProvider = Provider.of<ProfileProvider>(context);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-    // Load profile data from the UserModel if not already set.
-    if (authProvider.user != null && profileProvider.name.isEmpty) {
-      profileProvider.loadFromUserModel(authProvider.user!);
-    }
 
     return Container(
       decoration: BoxDecoration(
@@ -129,8 +143,14 @@ class ProfileContent extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.indigo,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                    textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 14,
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -145,8 +165,14 @@ class ProfileContent extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.redAccent,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                    textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 14,
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

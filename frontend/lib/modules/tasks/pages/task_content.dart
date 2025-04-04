@@ -42,7 +42,7 @@ class TaskContent extends StatelessWidget {
               TaskTile(
                 icon: Icons.question_answer,
                 label: "Questionnaire",
-                routeName: AppRoutes.questionary,
+                routeName: AppRoutes.questionaryList,
               ),
               TaskTile(
                 icon: Icons.today,

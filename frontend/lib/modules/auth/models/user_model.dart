@@ -1,3 +1,4 @@
+// lib/modules/auth/models/user_model.dart
 class UserModel {
   final String id;
   final String fullName;
@@ -24,7 +25,7 @@ class UserModel {
     required this.isLoggedIn,
     required this.createdAt,
     required this.updatedAt,
-    this.bio = "No Bio provided", // Default value if none provided
+    this.bio = "No Bio provided",
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -42,7 +43,7 @@ class UserModel {
       isLoggedIn: json['isLoggedIn'] as bool,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      bio: json['bio'] ?? "No Bio provided", // Use provided bio or default
+      bio: json['bio'] ?? "No Bio provided",
     );
   }
 

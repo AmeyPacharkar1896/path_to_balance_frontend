@@ -1,5 +1,7 @@
+// lib/modules/home/view_model/profile_provider.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/models/user_model.dart';
+import 'package:frontend/modules/auth/provider/auth_provider.dart';
 
 class ProfileProvider extends ChangeNotifier {
   String _name = "";
@@ -10,15 +12,15 @@ class ProfileProvider extends ChangeNotifier {
   String get email => _email;
   String get bio => _bio;
 
-  // Loads data from a UserModel.
-  void loadFromUserModel(UserModel user) {
+  // Sync profile data from a UserModel.
+  void syncFromUser(UserModel user) {
     _name = user.fullName;
     _email = user.email;
-    _bio = user.bio; // Now user.bio has a default if missing.
+    _bio = user.bio;
     notifyListeners();
   }
 
-  // Updates the profile with new values.
+  // Optionally update profile values manually.
   void updateProfile({
     required String name,
     required String email,
@@ -29,5 +31,13 @@ class ProfileProvider extends ChangeNotifier {
     _bio = bio;
     notifyListeners();
     // Optionally, persist the changes via an API call or local storage.
+  }
+
+  // Refresh profile data by fetching the latest user data from AuthProvider.
+  Future<void> refreshProfile(AuthProvider authProvider) async {
+    await authProvider.refreshUserData();
+    if (authProvider.user != null) {
+      syncFromUser(authProvider.user!);
+    }
   }
 }
