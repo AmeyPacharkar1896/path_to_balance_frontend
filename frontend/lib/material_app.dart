@@ -1,3 +1,4 @@
+// lib/material_app.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/routes/app_routes.dart';
 
@@ -6,15 +7,16 @@ class MaterialAppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Listen for theme changes via ThemeViewModel
-    // final themeData = context.watch<ThemeViewModel>().themeData;
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // scaffoldMessengerKey: scaffoldMessengerKey, // Assign the key
-      // theme: themeData, // Use the theme from the provider
-      initialRoute: AppRoutes.onboarding,
+      initialRoute: AppRoutes.auth, // AuthGuard is the initial route
       routes: AppRoutes.routes,
+      onUnknownRoute:
+          (settings) => MaterialPageRoute(
+            builder:
+                (context) =>
+                    const Scaffold(body: Center(child: Text('Page not found'))),
+          ),
     );
   }
 }

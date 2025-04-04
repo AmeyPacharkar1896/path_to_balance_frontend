@@ -1,13 +1,13 @@
+// lib/global_provider.dart
 import 'package:flutter/material.dart';
-import 'package:frontend/features/home/presentation/provider/home_provider.dart';
-import 'package:frontend/features/home/presentation/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/modules/home/provider/home_provider.dart';
+import 'package:frontend/modules/home/provider/profile_provider.dart';
+import 'package:frontend/modules/auth/provider/auth_provider.dart';
+import 'package:frontend/modules/auth/provider/auth_screen_state.dart';
 
 class GlobalProvider extends StatelessWidget {
-  const GlobalProvider({
-    super.key,
-    required this.child,
-  });
+  const GlobalProvider({super.key, required this.child});
 
   final Widget child;
 
@@ -17,6 +17,8 @@ class GlobalProvider extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => HomeProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => AuthScreenState()),
       ],
       child: child,
     );
