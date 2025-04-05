@@ -1,27 +1,37 @@
-import 'package:frontend/modules/questionnaire/model/option_model.dart';
-import 'package:frontend/modules/questionnaire/model/question_model.dart';
+import 'question_model.dart';
 
 class QuestionnaireDetailModel {
   final String id;
   final String title;
-  final OptionModel options;
   final List<QuestionModel> questions;
+  final List<String> options;
 
   QuestionnaireDetailModel({
     required this.id,
     required this.title,
-    required this.options,
     required this.questions,
+    required this.options,
   });
 
   factory QuestionnaireDetailModel.fromJson(Map<String, dynamic> json) {
+    final optionsJson = json['options'] ?? {};
+    final List<String> optionsList = [
+      optionsJson['option1'] ?? '',
+      optionsJson['option2'] ?? '',
+      optionsJson['option3'] ?? '',
+      optionsJson['option4'] ?? '',
+    ];
+
+    final questionsList = (json['questions'] as List<dynamic>?)
+            ?.map((e) => QuestionModel.fromJson(e))
+            .toList() ??
+        [];
+
     return QuestionnaireDetailModel(
       id: json['_id'],
       title: json['title'],
-      options: OptionModel.fromJson(json['options']),
-      questions: List<QuestionModel>.from(
-        json['questions'].map((q) => QuestionModel.fromJson(q)),
-      ),
+      questions: questionsList,
+      options: optionsList,
     );
   }
 }

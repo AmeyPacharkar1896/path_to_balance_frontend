@@ -6,8 +6,9 @@ import 'package:frontend/modules/auth/view/registration_page.dart';
 import 'package:frontend/modules/home/view/home_screen.dart';
 import 'package:frontend/modules/onboarding/view/onboarding_page.dart';
 import 'package:frontend/modules/questionnaire/view/questionanaire_view_model.dart';
+import 'package:frontend/modules/questionnaire/view/questionnaire_detail_wrapper.dart';
+import 'package:frontend/modules/questionnaire/view/questionnaire_list_screen.dart';
 import 'package:frontend/modules/tasks/pages/task_content.dart';
-import 'package:frontend/modules/questionnaire/view/questionary_page.dart';
 import 'package:frontend/modules/tasks/pages/daily_tasks_page.dart';
 import 'package:frontend/modules/tasks/pages/weekly_tasks_page.dart';
 import 'package:frontend/modules/tasks/pages/previous_assessments_page.dart';
@@ -32,8 +33,10 @@ class AppRoutes {
     onboarding: (context) => const OnboardingPage(),
     home: (context) => const HomeScreen(),
     taskContent: (context) => const TaskContent(),
-    questionaryList: (context) => QuestionanaireViewModel(),
-    questionary: (context) => const QuestionaryPage(),
+    questionaryList:
+        (context) =>
+            const QuestionanaireViewModel(child: QuestionnaireListScreen()),
+    questionary: (context) => const QuestionnaireDetailWrapper(),
     dailyTasks: (context) => const DailyTasksPage(),
     weeklyTasks: (context) => const WeeklyTasksPage(),
     previousAssessments: (context) => const PreviousAssessmentsPage(),

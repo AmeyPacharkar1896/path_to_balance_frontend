@@ -10,11 +10,4 @@ class QuestionModel {
       question: json['question'],
     );
   }
-
-  Map<String, dynamic> toMap() {
-    return {
-      '_id': id,
-      'question': question,
-    };
-  }
 }

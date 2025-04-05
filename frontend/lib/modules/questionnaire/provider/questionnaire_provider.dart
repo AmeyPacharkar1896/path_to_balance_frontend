@@ -1,89 +1,82 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/questionnaire/model/evaluation_score.dart';
 import 'package:frontend/modules/questionnaire/model/questionnaire_detail_model.dart';
-import 'package:frontend/modules/questionnaire/model/questionnaire_list_model.dart';
-import 'package:frontend/modules/questionnaire/model/questionnaire_response_model.dart';
+import 'package:frontend/modules/questionnaire/model/questionnaire_model.dart';
 import 'package:frontend/modules/questionnaire/model/ai_response_model.dart';
+import 'package:frontend/modules/questionnaire/model/questionnaire_response_model.dart';
+import 'package:frontend/modules/questionnaire/model/evaluation_score.dart';
 import 'package:frontend/modules/questionnaire/service/questionnaire_service.dart';
 
 class QuestionnaireProvider extends ChangeNotifier {
-  QuestionnaireListModel? _questionnaireList;
-  QuestionnaireDetailModel? questionnaire;
-  AIResponseModel? aiResponse;
-  bool _isLoading = false;
-
-  int _currentQuestionIndex = 0;
-  String? _selectedOption;
-  final List<Map<String, dynamic>> _responses = [];
-
   final QuestionnaireService _service;
 
   QuestionnaireProvider(this._service);
 
-  QuestionnaireListModel? get questionnaireList => _questionnaireList;
-  bool get isLoading => _isLoading;
-  int get currentQuestionIndex => _currentQuestionIndex;
-  String? get selectedOption => _selectedOption; // Getter for selectedOption
-  bool get isLastQuestion =>
-      _currentQuestionIndex == (questionnaire?.questions.length ?? 1) - 1;
+  List<QuestionnaireModel> _questionnaires = [];
+  QuestionnaireDetailModel? _selectedQuestionnaire;
+  AIResponseModel? _aiResponse;
+  int _currentQuestionIndex = 0;
+  String? _selectedOption;
+  bool _isLoading = false;
 
-  Future<void> fetchQuestionnaires() async {
+  final List<Map<String, dynamic>> _responses = [];
+
+  // Getters
+  List<QuestionnaireModel> get questionnaires => _questionnaires;
+  QuestionnaireDetailModel? get selectedQuestionnaire => _selectedQuestionnaire;
+  AIResponseModel? get aiResponse => _aiResponse;
+  int get currentQuestionIndex => _currentQuestionIndex;
+  String? get selectedOption => _selectedOption;
+  bool get isLoading => _isLoading;
+  bool get isLastQuestion => _currentQuestionIndex == (_selectedQuestionnaire?.questions.length ?? 1) - 1;
+
+  // Fetch all questionnaires
+  Future<void> fetchQuestionnaireList() async {
     _isLoading = true;
     notifyListeners();
     try {
-      final result = await _service.getAllQuestionnaires();
-      _questionnaireList = result;
+      _questionnaires = await _service.getAllQuestionnaires();
     } catch (e) {
-      _questionnaireList = null;
+      _questionnaires = [];
     }
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> loadQuestionnaire(String id) async {
+  // Load selected questionnaire by ID
+  Future<void> loadQuestionnaireById(String id) async {
     _isLoading = true;
     notifyListeners();
     try {
-      questionnaire = await _service.fetchQuestionnaireById(id);
-      resetQuestionnaire();
+      _selectedQuestionnaire = await _service.fetchQuestionnaireById(id);
+      _currentQuestionIndex = 0;
+      _selectedOption = null;
+      _responses.clear();
     } catch (e) {
-      questionnaire = null;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      _selectedQuestionnaire = null;
     }
-  }
-
-  void resetQuestionnaire() {
-    _currentQuestionIndex = 0;
-    _selectedOption = null;
-    _responses.clear();
+    _isLoading = false;
     notifyListeners();
   }
 
+  // Update selected option
   void setSelectedOption(String option) {
     _selectedOption = option;
     notifyListeners();
   }
 
+  // Move to next question
   void nextQuestion() {
-    if (_selectedOption == null) return;
+    if (_selectedOption == null || _selectedQuestionnaire == null) return;
 
-    // Convert OptionModel to List<String>
-    final optionList = [
-      questionnaire!.options.option1,
-      questionnaire!.options.option2,
-      questionnaire!.options.option3,
-      questionnaire!.options.option4,
-    ];
-
-    final questionText =
-        questionnaire!.questions[_currentQuestionIndex].question;
-    final optionIndex = optionList.indexOf(_selectedOption!);
+    final questionText = _selectedQuestionnaire!.questions[_currentQuestionIndex].question;
+    final options = _selectedQuestionnaire!.options.toList();
+    final selectedIndex = options.indexOf(_selectedOption!) + 1;
 
     _responses.add({
       "question": questionText,
-      "answer": optionIndex + 1, // 1-based index
+      "answer": selectedIndex,
     });
 
     _selectedOption = null;
@@ -91,39 +84,32 @@ class QuestionnaireProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Submit all answers and get AI response
   Future<Map<String, dynamic>?> submitQuestionnaire(String userId) async {
-    if (_selectedOption != null) {
-      // Access options from questionnaire, not from QuestionModel
-      final optionList = [
-        questionnaire!.options.option1,
-        questionnaire!.options.option2,
-        questionnaire!.options.option3,
-        questionnaire!.options.option4,
-      ];
-
-      final optionIndex = optionList.indexOf(_selectedOption!);
+    log("${_selectedOption}, ${_selectedQuestionnaire}, ${_currentQuestionIndex}");
+    if (_selectedOption != null && _selectedQuestionnaire != null) {
+      final questionText = _selectedQuestionnaire!.questions[_currentQuestionIndex].question;
+      final options = _selectedQuestionnaire!.options.toList();
+      final selectedIndex = options.indexOf(_selectedOption!) + 1;
 
       _responses.add({
-        "question": questionnaire!.questions[_currentQuestionIndex].question,
-        "answer": optionIndex + 1,
+        "question": questionText,
+        "answer": selectedIndex,
       });
     }
 
-    final responseModel = QuestionnaireResponseModel(
+    final model = QuestionnaireResponseModel(
       userID: userId,
-      evaluationScore:
-          _responses
-              .map(
-                (e) => EvaluationScore(
-                  question: e["question"],
-                  answer: e["answer"],
-                ),
-              )
-              .toList(),
+      evaluationScore: _responses.map((e) => EvaluationScore(
+        question: e["question"],
+        answer: e["answer"],
+      )).toList(),
     );
 
-    final aiData = await _service.submitQuestionnaireResponse(responseModel);
+    final aiData = await _service.submitQuestionnaireResponse(model);
     if (aiData != null) {
+      _aiResponse = aiData;
+      notifyListeners();
       return {
         "sentiment": aiData.sentiment,
         "risk_level": aiData.riskLevel,
@@ -131,6 +117,7 @@ class QuestionnaireProvider extends ChangeNotifier {
         "suggestions": aiData.suggestions,
       };
     }
+
     return null;
   }
 }
