@@ -32,7 +32,7 @@ class AppRoutes {
     onboarding: (context) => const OnboardingPage(),
     home: (context) => const HomeScreen(),
     taskContent: (context) => const TaskContent(),
-    questionaryList: (context) => const QuestionanaireViewModel(),
+    questionaryList: (context) => QuestionanaireViewModel(),
     questionary: (context) => const QuestionaryPage(),
     dailyTasks: (context) => const DailyTasksPage(),
     weeklyTasks: (context) => const WeeklyTasksPage(),

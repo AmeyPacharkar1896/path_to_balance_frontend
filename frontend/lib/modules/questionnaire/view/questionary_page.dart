@@ -1,6 +1,8 @@
-// lib/modules/questionnaire/view/questionary_page.dart
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/auth/provider/auth_provider.dart';
 import 'package:frontend/modules/questionnaire/provider/questionnaire_provider.dart';
+import 'package:frontend/modules/questionnaire/service/questionnaire_service.dart';
+import 'package:frontend/modules/questionnaire/view/result_screen.dart';
 import 'package:provider/provider.dart';
 
 class QuestionaryPage extends StatelessWidget {
@@ -9,9 +11,11 @@ class QuestionaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final questionnaireId = ModalRoute.of(context)!.settings.arguments as String;
-
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    
     return ChangeNotifierProvider(
-      create: (_) => QuestionnaireProvider()..loadQuestionnaire(questionnaireId),
+      create: (_) =>
+          QuestionnaireProvider(QuestionnaireService())..loadQuestionnaire(questionnaireId),
       child: Consumer<QuestionnaireProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading || provider.questionnaire == null) {
@@ -19,76 +23,65 @@ class QuestionaryPage extends StatelessWidget {
               body: Center(child: CircularProgressIndicator()),
             );
           }
-
+          
           final q = provider.questionnaire!;
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.indigo.shade100, Colors.indigo.shade50],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+          final currentIndex = provider.currentQuestionIndex;
+          final question = q.questions[currentIndex];
+          // Use the common options from OptionModel
+          final options = q.options;
+          final optionsList = [
+            options.option1,
+            options.option2,
+            options.option3,
+            options.option4,
+          ];
+          final isLastQuestion = provider.isLastQuestion;
+          
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(q.title),
+              centerTitle: true,
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${currentIndex + 1}. ${question.question}',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  ...optionsList.map((opt) => RadioListTile<String>(
+                        title: Text(opt),
+                        value: opt,
+                        groupValue: provider.selectedOption,
+                        onChanged: (value) => provider.setSelectedOption(value!),
+                        activeColor: Colors.indigo,
+                      )),
+                ],
               ),
             ),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                title: Text(
-                  q.title,
-                  style: const TextStyle(
-                    color: Colors.indigo,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                iconTheme: const IconThemeData(color: Colors.indigo),
-                centerTitle: true,
-              ),
-              body: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: q.questions.length,
-                itemBuilder: (context, index) {
-                  final question = q.questions[index];
-                  final options = q.options;
-
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 4,
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${index + 1}. ${question.question}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Colors.indigo,
+            floatingActionButton: FloatingActionButton.extended(
+              label: Text(isLastQuestion ? "Submit" : "Next"),
+              backgroundColor: provider.selectedOption == null ? Colors.grey : Colors.indigo,
+              onPressed: provider.selectedOption == null
+                  ? null
+                  : () async {
+                      if (isLastQuestion) {
+                        final responseData = await provider.submitQuestionnaire(authProvider.user!.id);
+                        if (responseData != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResultScreen(responseData: responseData),
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          ...[options.option1, options.option2, options.option3, options.option4]
-                              .map((opt) => Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 4),
-                                    child: Row(
-                                      children: [
-                                        const Icon(Icons.circle_outlined, color: Colors.indigo),
-                                        const SizedBox(width: 10),
-                                        Expanded(child: Text(opt)),
-                                      ],
-                                    ),
-                                  ))
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                          );
+                        }
+                      } else {
+                        provider.nextQuestion();
+                      }
+                    },
             ),
           );
         },
