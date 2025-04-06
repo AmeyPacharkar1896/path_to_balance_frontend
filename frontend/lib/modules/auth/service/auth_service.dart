@@ -42,7 +42,6 @@ class AuthService {
   /// Fetches the logged-in user data using the given id.
   Future<UserModel?> getLoggedInUser(String? userId) async {
     try {
-
       if (userId == null) {
         log("[AuthService] No userId found in SharedPreferences.");
         return null;
@@ -60,11 +59,15 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> res = jsonDecode(response.body);
-        if (res['success'] == true &&
-            res['data'] != null &&
-            res['data']['user'] != null) {
-          return UserModel.fromJson(res['data']['user']);
+
+        final data = res['data'];
+        if (res['success'] == true && data != null && data['user'] != null) {
+          return UserModel.fromJson(data['user']);
+        } else {
+          log("[AuthService] Invalid response structure: data or user is null");
         }
+      } else {
+        log("[AuthService] Non-200 status code: ${response.statusCode}");
       }
 
       return null;
@@ -120,6 +123,7 @@ class AuthService {
   }
 
   /// Log in an existing user and store login state.
+  /// Log in an existing user and store login state.
   Future<UserModel?> login(String userName, String password) async {
     try {
       final payload = jsonEncode({"userName": userName, "password": password});
@@ -133,16 +137,21 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> res = jsonDecode(response.body);
+
+        final data = res['data'];
         if (res['success'] == true &&
-            res['data'] != null &&
-            res['data']['user'] != null) {
-          final user = UserModel.fromJson(res['data']['user']);
+            data != null &&
+            data is Map &&
+            data['user'] != null) {
+          final user = UserModel.fromJson(data['user']);
 
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
           await prefs.setString('userId', user.id); // 👈 Save userId here
 
           return user;
+        } else {
+          log("[AuthService] Login response missing user or invalid structure");
         }
       }
       return null;

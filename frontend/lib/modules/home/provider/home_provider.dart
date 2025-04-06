@@ -40,27 +40,26 @@ class HomeProvider extends ChangeNotifier {
   }
 
   Future<void> loadUserData() async {
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    final String? userId = prefs.getString('userId');
-    final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? userId = prefs.getString('userId');
+      final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-    if (userId != null && isLoggedIn) {
-      final updatedUser = await AuthService().getLoggedInUser(userId);
+      if (userId != null && isLoggedIn) {
+        final updatedUser = await AuthService().getLoggedInUser(userId);
 
-      if (updatedUser != null) {
-        _user = updatedUser;
-        await prefs.setString('user', jsonEncode(_user!.toJson()));
-        notifyListeners();
+        if (updatedUser != null) {
+          _user = updatedUser;
+          await prefs.setString('user', jsonEncode(_user!.toJson()));
+          notifyListeners();
+        } else {
+          log('[HomeProvider] loadUserData failed: updatedUser is null');
+        }
       } else {
-        log('[HomeProvider] loadUserData failed: updatedUser is null');
+        log('[HomeProvider] No logged-in userId found in SharedPreferences');
       }
-    } else {
-      log('[HomeProvider] No logged-in userId found in SharedPreferences');
+    } catch (e) {
+      log('[HomeProvider] loadUserData error: $e');
     }
-  } catch (e) {
-    log('[HomeProvider] loadUserData error: $e');
   }
-}
-
 }

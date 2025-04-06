@@ -12,16 +12,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Fetch user data only once when the screen initializes
+    Future.microtask(() {
+      Provider.of<HomeProvider>(context, listen: false).loadUserData();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<HomeProvider>(
       builder: (context, provider, child) {
         return Scaffold(
-          // appBar: AppBar(
-          //   title: const Text("Home"),
-          //   centerTitle: true,
-          //   backgroundColor: Colors.indigo,
-          //   foregroundColor: Colors.white,
-          // ),
           body: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

@@ -57,7 +57,7 @@ class TaskContent extends StatelessWidget {
               TaskTile(
                 icon: Icons.history,
                 label: "Previous Assessments",
-                routeName: AppRoutes.previousAssessments,
+                routeName: AppRoutes.assessmentHistory,
               ),
             ],
           ),

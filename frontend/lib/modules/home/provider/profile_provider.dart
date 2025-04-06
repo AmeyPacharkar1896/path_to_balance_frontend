@@ -14,9 +14,9 @@ class ProfileProvider extends ChangeNotifier {
 
   // Sync profile data from a UserModel.
   void syncFromUser(UserModel user) {
-    _name = user.fullName;
+    _name = user.fullName ?? "No Name";
     _email = user.email;
-    _bio = user.bio;
+    _bio = user.bio ?? "No Bio provided";
     notifyListeners();
   }
 
@@ -37,7 +37,7 @@ class ProfileProvider extends ChangeNotifier {
   Future<void> refreshProfile(HomeProvider homeProvider) async {
     await homeProvider.loadUserData(); // Ensure data is loaded first
 
-    final updatedUser = homeProvider.user; // Then get the user
+    final updatedUser = homeProvider.user;
 
     if (updatedUser != null) {
       log(updatedUser.toString());
