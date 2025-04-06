@@ -1,7 +1,7 @@
-// lib/modules/home/view_model/profile_provider.dart
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/models/user_model.dart';
-import 'package:frontend/modules/auth/provider/auth_provider.dart';
+import 'package:frontend/modules/home/provider/home_provider.dart';
 
 class ProfileProvider extends ChangeNotifier {
   String _name = "";
@@ -30,14 +30,22 @@ class ProfileProvider extends ChangeNotifier {
     _email = email;
     _bio = bio;
     notifyListeners();
-    // Optionally, persist the changes via an API call or local storage.
+    // Optionally, persist changes via an API call or local storage.
   }
 
-  // Refresh profile data by fetching the latest user data from AuthProvider.
-  Future<void> refreshProfile(AuthProvider authProvider) async {
-    await authProvider.refreshUserData();
-    if (authProvider.user != null) {
-      syncFromUser(authProvider.user!);
+  // Refresh profile data by fetching the latest user data using AuthService.
+  Future<void> refreshProfile(HomeProvider homeProvider) async {
+    await homeProvider.loadUserData(); // Ensure data is loaded first
+
+    final updatedUser = homeProvider.user; // Then get the user
+
+    if (updatedUser != null) {
+      log(updatedUser.toString());
+      syncFromUser(updatedUser);
+    } else {
+      log(
+        '[ProfileProvider] refreshProfile failed: updatedUser is null from HomeProvider',
+      );
     }
   }
 }

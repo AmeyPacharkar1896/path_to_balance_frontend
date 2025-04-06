@@ -10,7 +10,8 @@ class QuestionnaireDetailScreen extends StatefulWidget {
   const QuestionnaireDetailScreen({super.key, required this.questionnaireId});
 
   @override
-  State<QuestionnaireDetailScreen> createState() => _QuestionnaireDetailScreenState();
+  State<QuestionnaireDetailScreen> createState() =>
+      _QuestionnaireDetailScreenState();
 }
 
 class _QuestionnaireDetailScreenState extends State<QuestionnaireDetailScreen> {
@@ -35,69 +36,99 @@ class _QuestionnaireDetailScreenState extends State<QuestionnaireDetailScreen> {
     final questionnaireProvider = Provider.of<QuestionnaireProvider>(context);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    final question = questionnaireProvider.selectedQuestionnaire?.questions[questionnaireProvider.currentQuestionIndex];
-    final options = questionnaireProvider.selectedQuestionnaire?.options.toList() ?? [];
+    final question =
+        questionnaireProvider
+            .selectedQuestionnaire
+            ?.questions[questionnaireProvider.currentQuestionIndex];
+    final options =
+        questionnaireProvider.selectedQuestionnaire?.options.toList() ?? [];
 
     return Scaffold(
       appBar: AppBar(title: const Text("Answer Questions")),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : question == null
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : question == null
               ? const Center(child: Text("No question found"))
               : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Q${questionnaireProvider.currentQuestionIndex + 1}. ${question.question}",
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Q${questionnaireProvider.currentQuestionIndex + 1}. ${question.question}",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 20),
+                    ),
+                    const SizedBox(height: 20),
 
-                      ...options.map(
-                        (option) => RadioListTile<String>(
-                          title: Text(option),
-                          value: option,
-                          groupValue: questionnaireProvider.selectedOption,
-                          onChanged: (val) => questionnaireProvider.setSelectedOption(val!),
-                        ),
+                    ...options.map(
+                      (option) => RadioListTile<String>(
+                        title: Text(option),
+                        value: option,
+                        groupValue: questionnaireProvider.selectedOption,
+                        onChanged:
+                            (val) =>
+                                questionnaireProvider.setSelectedOption(val!),
                       ),
+                    ),
 
-                      const Spacer(),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            final userId = authProvider.user?.id;
+                    const Spacer(),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final userId = authProvider.user?.id;
 
-                            if (userId == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("User not found. Please log in again.")),
-                              );
-                              return;
-                            }
+                          if (userId == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "User not found. Please log in again.",
+                                ),
+                              ),
+                            );
+                            return;
+                          }
 
-                            if (questionnaireProvider.isLastQuestion) {
-                              final result = await questionnaireProvider.submitQuestionnaire(userId);
-                              if (context.mounted) {
+                          if (questionnaireProvider.isLastQuestion) {
+                            final result = await questionnaireProvider
+                                .submitQuestionnaire(userId);
+                            if (context.mounted) {
+                              if (result != null) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => ResultScreen(result: result),
+                                    builder:
+                                        (_) => ResultScreen(result: result),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Submission failed. Please try again.",
+                                    ),
                                   ),
                                 );
                               }
-                            } else {
-                              questionnaireProvider.nextQuestion();
                             }
-                          },
-                          child: Text(questionnaireProvider.isLastQuestion ? "Submit" : "Next"),
+                          } else {
+                            questionnaireProvider.nextQuestion();
+                          }
+                        },
+                        child: Text(
+                          questionnaireProvider.isLastQuestion
+                              ? "Submit"
+                              : "Next",
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
     );
   }
 }

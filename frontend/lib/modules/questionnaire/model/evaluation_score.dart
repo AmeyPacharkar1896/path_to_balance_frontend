@@ -4,5 +4,10 @@ class EvaluationScore {
 
   EvaluationScore({required this.question, required this.answer});
 
-  Map<String, dynamic> toJson() => {"question": question, "answer": answer};
+  Map<String, dynamic> toJson() {
+    return {
+      "question": question,
+      "answer": answer,
+    };
+  }
 }

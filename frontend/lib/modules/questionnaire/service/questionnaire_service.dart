@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:frontend/core/env_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/modules/questionnaire/model/questionnaire_detail_model.dart';
@@ -38,20 +39,33 @@ class QuestionnaireService {
   }
 
   Future<AIResponseModel?> submitQuestionnaireResponse(
-    QuestionnaireResponseModel model,
-  ) async {
-    final url = Uri.parse("$baseUrl/api/v1/response");
+  QuestionnaireResponseModel model,
+) async {
+  final url = Uri.parse("$baseUrl/api/v1/response");
+  log('[submitQuestionnaireResponse] Sending POST request to: $url');
+  log('[submitQuestionnaireResponse] Payload: ${json.encode(model.toJson())}');
+
+  try {
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: json.encode(model.toJson()),
     );
 
+    log('[submitQuestionnaireResponse] Status code: ${response.statusCode}');
+    log('[submitQuestionnaireResponse] Response body: ${response.body}');
+
     if (response.statusCode == 200) {
       final body = json.decode(response.body);
       return AIResponseModel.fromJson(body['data']);
     } else {
+      log('[submitQuestionnaireResponse] Request failed with status ${response.statusCode}');
       return null;
     }
+  } catch (e) {
+    log('[submitQuestionnaireResponse] Error occurred: $e');
+    return null;
   }
+}
+
 }

@@ -12,19 +12,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
-  void initState() {
-    super.initState();
-    // Fetch user data when the HomeScreen is initialized
-    fetchUserData();
-  }
-
-  Future<void> fetchUserData() async {
-    // Implement your data fetching logic here
-    // For example, call a method from your HomeProvider
-    await Provider.of<HomeProvider>(context, listen: false).loadUserData();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Consumer<HomeProvider>(
       builder: (context, provider, child) {

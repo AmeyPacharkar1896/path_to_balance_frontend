@@ -1,5 +1,5 @@
-// lib/modules/home/view/widgets/profile_content.dart
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/home/provider/home_provider.dart';
 import 'package:frontend/modules/home/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
 import 'profile_edit_dialog.dart';
@@ -7,7 +7,7 @@ import 'package:frontend/modules/auth/provider/auth_provider.dart';
 import 'package:frontend/routes/app_routes.dart';
 
 class ProfileContent extends StatefulWidget {
-  const ProfileContent({Key? key}) : super(key: key);
+  const ProfileContent({super.key});
 
   @override
   State<ProfileContent> createState() => _ProfileContentState();
@@ -19,12 +19,12 @@ class _ProfileContentState extends State<ProfileContent> {
     super.initState();
     // Once the widget is built, refresh the user data.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final homeProvider = Provider.of<HomeProvider>(context, listen: false);
       final profileProvider = Provider.of<ProfileProvider>(
         context,
         listen: false,
       );
-      await profileProvider.refreshProfile(authProvider);
+      await profileProvider.refreshProfile(homeProvider);
     });
   }
 

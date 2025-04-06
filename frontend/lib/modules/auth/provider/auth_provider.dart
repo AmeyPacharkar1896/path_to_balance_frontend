@@ -10,14 +10,18 @@ class AuthProvider extends ChangeNotifier {
   UserModel? _user;
   UserModel? get user => _user;
   bool get isAuthenticated => _user != null;
-  
+
   AuthService authService = AuthService();
 
   AuthProvider() {
-    _initializeUser();
+    initializeUser();
   }
 
-  Future<void> _initializeUser() async {
+  UserModel? getCurrentUser() {
+    return _user;
+  }
+
+  Future<void> initializeUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userString = prefs.getString('user');
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
@@ -33,11 +37,23 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> signup(String fullName, String userName, String email, String password) async {
+  Future<void> signup(
+    String fullName,
+    String userName,
+    String email,
+    String password,
+  ) async {
     try {
-      final user = await authService.signup(fullName, userName, email, password);
+      final user = await authService.signup(
+        fullName,
+        userName,
+        email,
+        password,
+      );
       if (user != null) {
         _user = user;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
         notifyListeners();
       } else {
         log('[AuthProvider] Signup failed: user is null');
@@ -53,6 +69,8 @@ class AuthProvider extends ChangeNotifier {
       final user = await authService.login(userName, password);
       if (user != null) {
         _user = user;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
         notifyListeners();
       } else {
         log('[AuthProvider] Login failed: user is null');
@@ -89,7 +107,9 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> refreshUserData() async {
     if (_user != null) {
-      final newUser = await authService.getLoggedInUser(_user!.id);
+      final prefs = await SharedPreferences.getInstance();
+      final String? userId = prefs.getString('userId');
+      final newUser = await authService.getLoggedInUser(userId);
       if (newUser != null) {
         _user = newUser;
         notifyListeners();

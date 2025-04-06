@@ -1,36 +1,53 @@
-import 'dart:developer';
-
+// view/result_screen.dart
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatelessWidget {
-  final Map<String, dynamic>? result;
+  final Map<String, dynamic> result;
 
-  const ResultScreen({super.key, this.result});
+  const ResultScreen({super.key, required this.result});
 
   @override
   Widget build(BuildContext context) {
-    log(result.toString());
-    if (result == null) {
-      return const Scaffold(
-        body: Center(child: Text("No results available")),
-      );
-    }
+    final sentiment = result['sentiment'];
+    final riskLevel = result['risk_level'];
+    final summary = result['summary'];
+    final suggestions = result['suggestions'] as List<dynamic>;
+    final score = result['score'];
 
     return Scaffold(
-      appBar: AppBar(title: const Text("AI Result")),
+      appBar: AppBar(title: const Text("AI Evaluation Result")),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Sentiment: ${result!['sentiment']}"),
-            Text("Risk Level: ${result!['risk_level']}"),
-            const SizedBox(height: 10),
-            Text("Summary: ${result!['summary']}"),
-            const SizedBox(height: 10),
-            Text("Suggestions: ${result!['suggestions']}"),
+            _infoTile("Sentiment", sentiment),
+            _infoTile("Risk Level", riskLevel),
+            _infoTile("Assessment Score", "$score"),
+            const SizedBox(height: 12),
+            const Text("Summary", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text(summary, style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 16),
+            const Text("Suggestions", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ...suggestions.map((s) => ListTile(
+                  leading: const Icon(Icons.check_circle_outline),
+                  title: Text(s),
+                )),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _infoTile(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Text("$title: ", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(value, style: const TextStyle(fontSize: 16)),
+        ],
       ),
     );
   }
