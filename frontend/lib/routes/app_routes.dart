@@ -1,4 +1,3 @@
-// Add to imports:
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/view/auth_guard.dart';
 import 'package:frontend/modules/auth/view/auth_screen.dart';
@@ -11,9 +10,9 @@ import 'package:frontend/modules/questionnaire/view/questionanaire_view_model.da
 import 'package:frontend/modules/questionnaire/view/questionnaire_detail_wrapper.dart';
 import 'package:frontend/modules/questionnaire/view/questionnaire_list_screen.dart';
 import 'package:frontend/modules/questionnaire/view/result_screen.dart';
-import 'package:frontend/modules/tasks/pages/daily_tasks_page.dart';
+import 'package:frontend/modules/tasks/pages/daily_tasks_page.dart' as daily;
 import 'package:frontend/modules/tasks/pages/task_content.dart';
-import 'package:frontend/modules/tasks/pages/weekly_tasks_page.dart';
+import 'package:frontend/modules/tasks/pages/weekly_tasks_page.dart' as weekly;
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -37,13 +36,12 @@ class AppRoutes {
     onboarding: (context) => const OnboardingPage(),
     home: (context) => const HomeScreen(),
     taskContent: (context) => const TaskContent(),
-    questionaryList:
-        (context) =>
-            const QuestionanaireViewModel(child: QuestionnaireListScreen()),
+    questionaryList: (context) =>
+        const QuestionanaireViewModel(child: QuestionnaireListScreen()),
     questionary: (context) => const QuestionnaireDetailWrapper(),
     // result: (context) => const ResultScreen(),
-    dailyTasks: (context) => const DailyTasksPage(),
-    weeklyTasks: (context) => const WeeklyTasksPage(),
+    dailyTasks: (context) => const daily.DailyTasksPage(),
+    weeklyTasks: (context) => const weekly.WeeklyTasksPage(),
     assessmentHistory: (context) => const AssessmentListScreen(),
     // evaluationDetail: (context) => const EvaluationDetailScreen(),
   };

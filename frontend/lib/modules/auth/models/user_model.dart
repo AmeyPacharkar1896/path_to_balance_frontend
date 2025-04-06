@@ -33,7 +33,7 @@ class UserModel {
       userName: json['userName'] ?? '',
       email: json['email'] ?? '',
       bio: json['bio'] ?? '',
-      profilePicture: json['profilePicture'],
+      profilePicture: json['avatar'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
       recentAssessment: json['recentAssessment'] != null
@@ -53,7 +53,7 @@ class UserModel {
       'userName': userName,
       'email': email,
       'bio': bio,
-      'profilePicture': profilePicture,
+      'avatar': profilePicture,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'recentAssessment': recentAssessment?.toJson(),

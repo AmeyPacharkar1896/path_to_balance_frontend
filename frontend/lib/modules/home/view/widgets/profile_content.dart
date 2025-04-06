@@ -74,11 +74,12 @@ class _ProfileContentState extends State<ProfileContent> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 4),
                   ),
-                  child: const CircleAvatar(
+                  child: CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage("assets/profile_pic.png"),
+                    backgroundImage: profileProvider.avatar.isNotEmpty ? NetworkImage(profileProvider.avatar) : null
                   ),
                 ),
+
                 const SizedBox(height: 20),
                 // Card for user information.
                 Card(

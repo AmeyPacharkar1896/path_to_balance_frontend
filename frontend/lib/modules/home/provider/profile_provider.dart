@@ -7,16 +7,19 @@ class ProfileProvider extends ChangeNotifier {
   String _name = "";
   String _email = "";
   String _bio = "";
+  String _avatar = "";
 
   String get name => _name;
   String get email => _email;
   String get bio => _bio;
+  String get avatar => _avatar;
 
   // Sync profile data from a UserModel.
   void syncFromUser(UserModel user) {
     _name = user.fullName ?? "No Name";
     _email = user.email;
     _bio = user.bio ?? "No Bio provided";
+    _avatar = user.profilePicture ?? "";
     notifyListeners();
   }
 
