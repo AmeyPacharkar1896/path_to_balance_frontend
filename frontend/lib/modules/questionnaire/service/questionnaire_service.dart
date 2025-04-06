@@ -39,33 +39,50 @@ class QuestionnaireService {
   }
 
   Future<AIResponseModel?> submitQuestionnaireResponse(
-  QuestionnaireResponseModel model,
-) async {
-  final url = Uri.parse("$baseUrl/api/v1/response");
-  log('[submitQuestionnaireResponse] Sending POST request to: $url');
-  log('[submitQuestionnaireResponse] Payload: ${json.encode(model.toJson())}');
+    QuestionnaireResponseModel model,
+  ) async {
+    final url = Uri.parse("$baseUrl/api/v1/response");
+    log('[submitQuestionnaireResponse] Sending POST request to: $url');
+    final payload = json.encode(model.toJson());
+    log('[submitQuestionnaireResponse] Payload: $payload');
 
-  try {
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(model.toJson()),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: payload,
+      );
 
-    log('[submitQuestionnaireResponse] Status code: ${response.statusCode}');
-    log('[submitQuestionnaireResponse] Response body: ${response.body}');
+      log('[submitQuestionnaireResponse] Status code: ${response.statusCode}');
+      log('[submitQuestionnaireResponse] Response body: ${response.body}');
 
-    if (response.statusCode == 200) {
-      final body = json.decode(response.body);
-      return AIResponseModel.fromJson(body['data']);
-    } else {
-      log('[submitQuestionnaireResponse] Request failed with status ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final body = json.decode(response.body);
+        // Pass the nested 'sentiment' object to the factory.
+        if (body['data'] != null && body['data']['sentiment'] != null) {
+          final aiResponse = AIResponseModel.fromJson(
+            body['data']['sentiment'],
+          );
+          log(
+            '[submitQuestionnaireResponse] Parsed AI Response: ${aiResponse.toJson()}',
+          );
+          return aiResponse;
+        } else {
+          log(
+            '[submitQuestionnaireResponse] Invalid response structure: ${body.toString()}',
+          );
+          return null;
+        }
+      } else {
+        log(
+          '[submitQuestionnaireResponse] Request failed with status ${response.statusCode}: ${response.body}',
+        );
+        return null;
+      }
+    } catch (e, stacktrace) {
+      log('[submitQuestionnaireResponse] Exception occurred: $e');
+      log('[submitQuestionnaireResponse] Stacktrace: $stacktrace');
       return null;
     }
-  } catch (e) {
-    log('[submitQuestionnaireResponse] Error occurred: $e');
-    return null;
   }
-}
-
 }

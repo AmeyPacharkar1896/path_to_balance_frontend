@@ -18,15 +18,20 @@ class AIResponseModel {
   });
 
   factory AIResponseModel.fromJson(Map<String, dynamic> json) {
-    final eval = json['evaluationSummary'];
+    final eval = json['evaluationSummary'] ?? {};
     return AIResponseModel(
-      userID: json['userID'],
-      questionnaireID: json['questioannaireID'], // note the typo from the API
-      sentiment: eval['sentiment'],
-      riskLevel: eval['risk_level'],
-      summary: eval['summary'],
-      assessmentScore: eval['assesmentScore'],
-      suggestions: List<String>.from(eval['suggestions']),
+      userID: json['userID']?.toString() ?? '',
+      questionnaireID: json['questioannaireID']?.toString() ?? '',
+      sentiment: eval['sentiment']?.toString() ?? 'unknown',
+      riskLevel: eval['risk_level']?.toString() ?? 'unknown',
+      summary: eval['summary']?.toString() ?? '',
+      assessmentScore: eval['assesmentScore'] is int
+          ? eval['assesmentScore']
+          : int.tryParse(eval['assesmentScore']?.toString() ?? '0') ?? 0,
+      suggestions: (eval['suggestions'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
     );
   }
 

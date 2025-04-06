@@ -91,30 +91,40 @@ class AuthService {
         "email": email,
         "password": password,
       });
+
       final uri = Uri.parse(signupEndpoint);
       final response = await client.post(
         uri,
         headers: {"Content-Type": "application/json"},
         body: payload,
       );
+
       log("[AuthService] Signup response: ${response.body}");
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> res = jsonDecode(response.body);
-        if (res['success'] == true && res['data'] != null) {
-          final userJson =
-              (res['data'] is Map && res['data'].containsKey('user'))
-                  ? res['data']['user']
-                  : res['data'];
-          final user = UserModel.fromJson(userJson);
+        final data = res['data'];
+
+        if (res['success'] == true &&
+            data != null &&
+            data is Map &&
+            data['user'] != null) {
+          final user = UserModel.fromJson(data['user']);
 
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
-          await prefs.setString('userId', user.id); // 👈 Save userId here
+          await prefs.setString('userId', user.id);
 
           return user;
+        } else {
+          log(
+            "[AuthService] Signup response missing user or invalid structure",
+          );
         }
+      } else {
+        log("[AuthService] Signup failed with status ${response.statusCode}");
       }
+
       return null;
     } catch (e) {
       log("[AuthService] Signup error: $e");

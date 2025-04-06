@@ -61,8 +61,8 @@ class DashboardContent extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => EvaluationDetailScreen(
-                          questionnaireId: assessment.questionnaireId,
-                          evaluationId: assessment.evaluationId,
+                          questionnaireId: assessment.questionnaireId ?? '',
+                          evaluationId: assessment.evaluationId ?? '',
                         ),
                       ),
                     );

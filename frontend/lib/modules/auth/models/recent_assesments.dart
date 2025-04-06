@@ -2,7 +2,7 @@ class RecentAssessment {
   final String? sentiment;
   final String? riskLevel;
   final String? summary;
-  final int assesmentScore;
+  final int? assessmentScore;
   final List<String>? suggestions;
   final String? id;
 
@@ -10,7 +10,7 @@ class RecentAssessment {
     this.sentiment,
     this.riskLevel,
     this.summary,
-    required this.assesmentScore,
+    this.assessmentScore,
     this.suggestions,
     this.id,
   });
@@ -20,22 +20,24 @@ class RecentAssessment {
       sentiment: json['sentiment'],
       riskLevel: json['risk_level'],
       summary: json['summary'],
-      assesmentScore: json['assesmentScore'] is int
-          ? json['assesmentScore']
-          : int.tryParse(json['assesmentScore'].toString()) ?? 0,
+      assessmentScore: json['assessmentScore'] is int
+          ? json['assessmentScore']
+          : int.tryParse(json['assessmentScore'].toString()),
       suggestions: json['suggestions'] != null
           ? List<String>.from(json['suggestions'])
-          : null,
+          : [],
       id: json['_id'],
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'sentiment': sentiment,
-        'risk_level': riskLevel,
-        'summary': summary,
-        'assesmentScore': assesmentScore,
-        'suggestions': suggestions,
-        '_id': id,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'sentiment': sentiment,
+      'risk_level': riskLevel,
+      'summary': summary,
+      'assessmentScore': assessmentScore,
+      'suggestions': suggestions,
+      '_id': id,
+    };
+  }
 }

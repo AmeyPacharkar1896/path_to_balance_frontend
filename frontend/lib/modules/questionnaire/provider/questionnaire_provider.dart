@@ -118,6 +118,7 @@ class QuestionnaireProvider extends ChangeNotifier {
   log('[submitQuestionnaire] Prepared response model: ${jsonEncode(responseModel.toJson())}');
 
   final aiData = await _service.submitQuestionnaireResponse(responseModel);
+  log('[submitQuestionnaire] AI analysis result: ${jsonEncode(aiData)}');
 
   if (aiData != null) {
     log('[submitQuestionnaire] AI response received successfully');

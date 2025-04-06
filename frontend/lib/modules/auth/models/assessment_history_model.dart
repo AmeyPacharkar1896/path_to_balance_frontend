@@ -1,25 +1,27 @@
-class AssessmentHistory {
-  final String questionnaireId;
-  final String evaluationId;
-  final String id;
+class AssessmentHistoryModel {
+  final String? questionnaireId;
+  final String? evaluationId;
+  final String? id;
 
-  AssessmentHistory({
-    required this.questionnaireId,
-    required this.evaluationId,
-    required this.id,
+  AssessmentHistoryModel({
+    this.questionnaireId,
+    this.evaluationId,
+    this.id,
   });
 
-  factory AssessmentHistory.fromJson(Map<String, dynamic> json) {
-    return AssessmentHistory(
+  factory AssessmentHistoryModel.fromJson(Map<String, dynamic> json) {
+    return AssessmentHistoryModel(
       questionnaireId: json['questionnaireId'],
       evaluationId: json['evaluationId'],
       id: json['_id'],
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'questionnaireId': questionnaireId,
-        'evaluationId': evaluationId,
-        '_id': id,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'questionnaireId': questionnaireId,
+      'evaluationId': evaluationId,
+      '_id': id,
+    };
+  }
 }
