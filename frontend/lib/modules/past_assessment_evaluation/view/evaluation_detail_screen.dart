@@ -16,22 +16,28 @@ class EvaluationDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Access the PastAssessmentProvider.
-    final provider = Provider.of<PastAssessmentProvider>(context, listen: false);
-    
+    final provider = Provider.of<PastAssessmentProvider>(
+      context,
+      listen: false,
+    );
+
     // Trigger evaluation loading.
     provider.loadEvaluationById(evaluationId);
-    
+
     return Consumer<PastAssessmentProvider>(
-        builder: (context, pastProvider, child) {
-          if (pastProvider.isLoadingEvaluation) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (pastProvider.evaluationResultMap == null) {
-            return const Center(child: Text("Evaluation result not found."));
-          }
-          // Pass the result Map to the ResultScreen.
-          return ResultScreen(result: pastProvider.evaluationResultMap!);
-        },
-      );
+      builder: (context, pastProvider, child) {
+        if (pastProvider.isLoadingEvaluation) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (pastProvider.evaluationResultMap == null) {
+          return const Center(child: Text("Evaluation result not found."));
+        }
+        // Pass the result Map to the ResultScreen.
+        return ResultScreen(
+          result: pastProvider.evaluationResultMap!,
+          isRecentEvaluation: true,
+        );
+      },
+    );
   }
 }

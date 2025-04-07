@@ -4,7 +4,6 @@ class RecentAssessment {
   final String summary;
   final int assesmentScore;
   final List<String> suggestions;
-  final String id;
 
   RecentAssessment({
     required this.sentiment,
@@ -12,18 +11,25 @@ class RecentAssessment {
     required this.summary,
     required this.assesmentScore,
     required this.suggestions,
-    required this.id,
   });
 
   factory RecentAssessment.fromJson(Map<String, dynamic> json) {
     return RecentAssessment(
-      sentiment: json['sentiment'],
-      riskLevel: json['risk_level'],
-      summary: json['summary'],
-      assesmentScore: json['assesmentScore'],
-      suggestions: List<String>.from(json['suggestions']),
-      id: json['_id'],
+      sentiment: json['sentiment'] ?? '',
+      riskLevel: json['risk_level'] ?? '',
+      summary: json['summary'] ?? '',
+      assesmentScore: json['assesmentScore'] ?? 0,
+      suggestions: List<String>.from(json['suggestions'] ?? []),
     );
   }
-}
 
+  Map<String, dynamic> toJson() {
+    return {
+      'sentiment': sentiment,
+      'risk_level': riskLevel,
+      'summary': summary,
+      'assesmentScore': assesmentScore,
+      'suggestions': suggestions,
+    };
+  }
+}

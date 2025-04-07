@@ -3,8 +3,9 @@ import 'package:frontend/routes/app_routes.dart';
 
 class ResultScreen extends StatelessWidget {
   final Map<String, dynamic> result;
+  bool isRecentEvaluation;
 
-  const ResultScreen({super.key, required this.result});
+  ResultScreen({super.key, required this.result, this.isRecentEvaluation = false});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,12 @@ class ResultScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // ✅ Go back to Questionnaire List screen
-            Navigator.popUntil(context, ModalRoute.withName(AppRoutes.questionaryList));
+            isRecentEvaluation
+                ? Navigator.pop(context)
+                : Navigator.popUntil(
+                  context,
+                  ModalRoute.withName(AppRoutes.questionaryList),
+                );
           },
         ),
       ),
@@ -34,11 +40,17 @@ class ResultScreen extends StatelessWidget {
             _infoTile("Risk Level", riskLevel),
             _infoTile("Assessment Score", "$score"),
             const SizedBox(height: 12),
-            const Text("Summary", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Summary",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 6),
             Text(summary, style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 16),
-            const Text("Suggestions", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Suggestions",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             ...suggestions.map(
               (s) => ListTile(
                 leading: const Icon(Icons.check_circle_outline),
@@ -56,7 +68,10 @@ class ResultScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Text("$title: ", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(
+            "$title: ",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           Text(value, style: const TextStyle(fontSize: 16)),
         ],
       ),
