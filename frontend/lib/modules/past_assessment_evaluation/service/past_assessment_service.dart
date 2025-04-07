@@ -11,7 +11,7 @@ class PastAssessmentService {
   Future<AIResponseModel?> fetchEvaluationById(String evaluationId) async {
     try {
       // Use GET method and pass the evaluationId as a query parameter.
-      final uri = Uri.parse("$getEvaluationEndpoint?evaluationId=$evaluationId");
+      final uri = Uri.parse("$getEvaluationEndpoint/$evaluationId");
       final response = await http.get(
         uri,
         headers: {"Content-Type": "application/json"},

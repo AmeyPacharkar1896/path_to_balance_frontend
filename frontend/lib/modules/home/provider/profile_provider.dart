@@ -19,7 +19,7 @@ class ProfileProvider extends ChangeNotifier {
     _name = user.fullName ?? "No Name";
     _email = user.email;
     _bio = user.bio ?? "No Bio provided";
-    _avatar = user.profilePicture ?? "";
+    _avatar = user.avatar ?? "";
     notifyListeners();
   }
 

@@ -128,8 +128,8 @@ class QuestionnaireProvider extends ChangeNotifier {
       "sentiment": aiData.sentiment,
       "risk_level": aiData.riskLevel,
       "summary": aiData.summary,
+      "assesmentScore": aiData.assessmentScore,
       "suggestions": aiData.suggestions,
-      "score": aiData.assessmentScore,
     };
   } else {
     log('[submitQuestionnaire] AI response is null');

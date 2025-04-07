@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:frontend/core/env_service.dart';
 import 'package:frontend/modules/auth/models/user_model.dart';
-import 'package:frontend/routes/app_routes.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/routes/app_routes.dart';
 
 class AuthService {
   final http.Client client = http.Client();
@@ -15,69 +15,6 @@ class AuthService {
   final String logoutEndpoint = "$baseUrl/api/v1/users/logout";
   final String getUserEndpoint = "$baseUrl/api/v1/users/get-logged-in-user";
 
-  /// Determines the initial route based on stored flags.
-  Future<String> getInitialRoute() async {
-    log("[AuthService] getInitialRoute called");
-    final prefs = await SharedPreferences.getInstance();
-    final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    final bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
-    final String? userId = prefs.getString('userId');
-
-    log(
-      "[AuthService] isLoggedIn=$isLoggedIn, hasSeenOnboarding=$hasSeenOnboarding, userId=$userId",
-    );
-
-    if (!hasSeenOnboarding) {
-      log("[AuthService] Returning onboarding route");
-      return AppRoutes.onboarding;
-    } else if (isLoggedIn && userId != null && userId.isNotEmpty) {
-      log("[AuthService] Returning home route");
-      return AppRoutes.home;
-    } else {
-      log("[AuthService] Returning authScreen route");
-      return AppRoutes.authScreen;
-    }
-  }
-
-  /// Fetches the logged-in user data using the given id.
-  Future<UserModel?> getLoggedInUser(String? userId) async {
-    try {
-      if (userId == null) {
-        log("[AuthService] No userId found in SharedPreferences.");
-        return null;
-      }
-
-      final payload = jsonEncode({"id": userId});
-      final uri = Uri.parse(getUserEndpoint);
-      final response = await client.post(
-        uri,
-        headers: {"Content-Type": "application/json"},
-        body: payload,
-      );
-
-      log("[AuthService] getLoggedInUser response: ${response.body}");
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> res = jsonDecode(response.body);
-
-        final data = res['data'];
-        if (res['success'] == true && data != null && data['user'] != null) {
-          return UserModel.fromJson(data['user']);
-        } else {
-          log("[AuthService] Invalid response structure: data or user is null");
-        }
-      } else {
-        log("[AuthService] Non-200 status code: ${response.statusCode}");
-      }
-
-      return null;
-    } catch (e) {
-      log("[AuthService] getLoggedInUser error: $e");
-      return null;
-    }
-  }
-
-  /// Sign up a new user and store login state.
   Future<UserModel?> signup(
     String fullName,
     String userName,
@@ -92,9 +29,8 @@ class AuthService {
         "password": password,
       });
 
-      final uri = Uri.parse(signupEndpoint);
       final response = await client.post(
-        uri,
+        Uri.parse(signupEndpoint),
         headers: {"Content-Type": "application/json"},
         body: payload,
       );
@@ -102,96 +38,97 @@ class AuthService {
       log("[AuthService] Signup response: ${response.body}");
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> res = jsonDecode(response.body);
+        final res = jsonDecode(response.body);
         final data = res['data'];
 
-        if (res['success'] == true &&
-            data != null &&
-            data is Map &&
-            data['user'] != null) {
-          final user = UserModel.fromJson(data['user']);
-
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('isLoggedIn', true);
-          await prefs.setString('userId', user.id);
-
-          return user;
-        } else {
-          log(
-            "[AuthService] Signup response missing user or invalid structure",
-          );
-        }
-      } else {
-        log("[AuthService] Signup failed with status ${response.statusCode}");
+        final user = UserModel.fromJson(data);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(user.toJson()));
+        await prefs.setString('userId', user.id);
+        return user;
       }
-
-      return null;
     } catch (e) {
       log("[AuthService] Signup error: $e");
-      return null;
     }
+    return null;
   }
 
-  /// Log in an existing user and store login state.
-  /// Log in an existing user and store login state.
   Future<UserModel?> login(String userName, String password) async {
     try {
-      final payload = jsonEncode({"userName": userName, "password": password});
-      final uri = Uri.parse(loginEndpoint);
+      final payload = jsonEncode({
+        "userName": userName,
+        "password": password,
+      });
+
       final response = await client.post(
-        uri,
+        Uri.parse(loginEndpoint),
         headers: {"Content-Type": "application/json"},
         body: payload,
       );
+
       log("[AuthService] Login response: ${response.body}");
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> res = jsonDecode(response.body);
-
-        final data = res['data'];
-        if (res['success'] == true &&
-            data != null &&
-            data is Map &&
-            data['user'] != null) {
-          final user = UserModel.fromJson(data['user']);
-
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('isLoggedIn', true);
-          await prefs.setString('userId', user.id); // 👈 Save userId here
-
-          return user;
-        } else {
-          log("[AuthService] Login response missing user or invalid structure");
-        }
+        final res = jsonDecode(response.body);
+        final user = UserModel.fromJson(res['data']['user']);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(user.toJson()));
+        await prefs.setString('userId', user.id);
+        return user;
       }
-      return null;
     } catch (e) {
       log("[AuthService] Login error: $e");
-      return null;
     }
+    return null;
   }
 
-  /// Log out a user and clear shared preferences.
-  Future<bool> logout(String userId) async {
+  Future<UserModel?> getLoggedInUser(String? userId) async {
     try {
-      final payload = jsonEncode({"_id": userId});
-      final uri = Uri.parse(logoutEndpoint);
+      final payload = jsonEncode({"id": userId});
       final response = await client.post(
-        uri,
+        Uri.parse(getUserEndpoint),
         headers: {"Content-Type": "application/json"},
         body: payload,
       );
-      log("[AuthService] Logout response: ${response.body}");
-      final Map<String, dynamic> res = jsonDecode(response.body);
-      if (res['success'] == true) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.clear(); // Clear all saved user data
-        return true;
+
+      log("[AuthService] getLoggedInUser response: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final res = jsonDecode(response.body);
+        return UserModel.fromJson(res['data']['user']);
       }
-      return false;
+    } catch (e) {
+      log("[AuthService] getLoggedInUser error: $e");
+    }
+    return null;
+  }
+
+  Future<bool> logout(String userId) async {
+    try {
+      final payload = jsonEncode({"_id": userId});
+      final response = await client.post(
+        Uri.parse(logoutEndpoint),
+        headers: {"Content-Type": "application/json"},
+        body: payload,
+      );
+
+      log("[AuthService] Logout response: ${response.body}");
+
+      return response.statusCode == 200;
     } catch (e) {
       log("[AuthService] Logout error: $e");
       return false;
     }
+  }
+
+  Future<String> getInitialRoute() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+    final userId = prefs.getString('userId');
+
+    if (!hasSeenOnboarding) return AppRoutes.onboarding;
+    if (isLoggedIn && userId != null) return AppRoutes.home;
+    return AppRoutes.authScreen;
   }
 }

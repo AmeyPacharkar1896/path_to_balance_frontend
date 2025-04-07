@@ -16,12 +16,12 @@ class AssessmentListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('All Assessments'),
       ),
-      body: user?.assessmentHistory == null || user!.assessmentHistory!.isEmpty
+      body: user?.assesmentHistory == null || user!.assesmentHistory!.isEmpty
           ? const Center(child: Text("No assessments found."))
           : ListView.builder(
-              itemCount: user.assessmentHistory!.length,
+              itemCount: user.assesmentHistory!.length,
               itemBuilder: (context, index) {
-                final assessment = user.assessmentHistory![index];
+                final assessment = user.assesmentHistory![index];
 
                 return ChangeNotifierProvider<PastAssessmentProvider>(
                   create: (_) => PastAssessmentProvider(),

@@ -1,4 +1,3 @@
-// lib/modules/auth/provider/auth_provider.dart
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
@@ -11,29 +10,30 @@ class AuthProvider extends ChangeNotifier {
   UserModel? get user => _user;
   bool get isAuthenticated => _user != null;
 
-  AuthService authService = AuthService();
+  final AuthService authService = AuthService();
 
   AuthProvider() {
     initializeUser();
   }
 
-  UserModel? getCurrentUser() {
-    return _user;
-  }
-
   Future<void> initializeUser() async {
     final prefs = await SharedPreferences.getInstance();
-    final userString = prefs.getString('user');
+    final userId = prefs.getString('userId');
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    if (userString != null && isLoggedIn) {
+
+    if (userId != null && isLoggedIn) {
       try {
-        final storedUser = UserModel.fromJson(jsonDecode(userString));
-        _user = storedUser;
-        notifyListeners();
-        await refreshUserData();
+        log("[AuthProvider] Fetching user from backend using userId: $userId");
+        final user = await authService.getLoggedInUser(userId);
+        if (user != null) {
+          _user = user;
+          notifyListeners();
+        }
       } catch (e) {
-        log("[AuthProvider] Error parsing stored user: $e");
+        log("[AuthProvider] Error loading user from backend: $e");
       }
+    } else {
+      log("[AuthProvider] No valid userId or not logged in.");
     }
   }
 
@@ -53,10 +53,9 @@ class AuthProvider extends ChangeNotifier {
       if (user != null) {
         _user = user;
         final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userId', user.id);
         await prefs.setBool('isLoggedIn', true);
         notifyListeners();
-      } else {
-        log('[AuthProvider] Signup failed: user is null');
       }
     } catch (e) {
       log('[AuthProvider] Signup error: $e');
@@ -70,10 +69,9 @@ class AuthProvider extends ChangeNotifier {
       if (user != null) {
         _user = user;
         final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userId', user.id);
         await prefs.setBool('isLoggedIn', true);
         notifyListeners();
-      } else {
-        log('[AuthProvider] Login failed: user is null');
       }
     } catch (e) {
       log('[AuthProvider] Login error: $e');
@@ -83,38 +81,23 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> logout() async {
     if (_user != null) {
-      try {
-        final success = await authService.logout(_user!.id);
-        if (success) {
-          _user = null;
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.remove('user');
-          await prefs.setBool('isLoggedIn', false);
-          notifyListeners();
-        } else {
-          log('[AuthProvider] Logout failed: success flag false');
-        }
-      } catch (e) {
-        log('[AuthProvider] Logout error: $e');
-        _user = null;
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.remove('user');
-        await prefs.setBool('isLoggedIn', false);
-        notifyListeners();
-      }
+      final success = await authService.logout(_user!.id);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('userId');
+      await prefs.setBool('isLoggedIn', false);
+      _user = null;
+      notifyListeners();
     }
   }
 
   Future<void> refreshUserData() async {
-    if (_user != null) {
-      final prefs = await SharedPreferences.getInstance();
-      final String? userId = prefs.getString('userId');
-      final newUser = await authService.getLoggedInUser(userId);
-      if (newUser != null) {
-        _user = newUser;
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+    if (userId != null) {
+      final user = await authService.getLoggedInUser(userId);
+      if (user != null) {
+        _user = user;
         notifyListeners();
-      } else {
-        log('[AuthProvider] Refresh failed: newUser is null');
       }
     }
   }

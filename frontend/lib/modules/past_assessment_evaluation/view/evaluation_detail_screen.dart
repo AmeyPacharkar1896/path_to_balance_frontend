@@ -21,9 +21,7 @@ class EvaluationDetailScreen extends StatelessWidget {
     // Trigger evaluation loading.
     provider.loadEvaluationById(evaluationId);
     
-    return Scaffold(
-      appBar: AppBar(title: const Text("Evaluation Details")),
-      body: Consumer<PastAssessmentProvider>(
+    return Consumer<PastAssessmentProvider>(
         builder: (context, pastProvider, child) {
           if (pastProvider.isLoadingEvaluation) {
             return const Center(child: CircularProgressIndicator());
@@ -34,7 +32,6 @@ class EvaluationDetailScreen extends StatelessWidget {
           // Pass the result Map to the ResultScreen.
           return ResultScreen(result: pastProvider.evaluationResultMap!);
         },
-      ),
-    );
+      );
   }
 }

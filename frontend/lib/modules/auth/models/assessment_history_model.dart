@@ -1,17 +1,23 @@
-class AssessmentHistoryModel {
-  final String? questionnaireId;
-  final String? evaluationId;
-  final String? id;
+class AssessmentHistory {
+  final String questionnaireTitle;
+  final String questionnaireId;
+  final int assessmentScore;
+  final String evaluationId;
+  final String id;
 
-  AssessmentHistoryModel({
-    this.questionnaireId,
-    this.evaluationId,
-    this.id,
+  AssessmentHistory({
+    required this.questionnaireTitle,
+    required this.questionnaireId,
+    required this.assessmentScore,
+    required this.evaluationId,
+    required this.id,
   });
 
-  factory AssessmentHistoryModel.fromJson(Map<String, dynamic> json) {
-    return AssessmentHistoryModel(
+  factory AssessmentHistory.fromJson(Map<String, dynamic> json) {
+    return AssessmentHistory(
+      questionnaireTitle: json['questionnaireTitle'],
       questionnaireId: json['questionnaireId'],
+      assessmentScore: json['assesmentScore'], // typo handled below
       evaluationId: json['evaluationId'],
       id: json['_id'],
     );
@@ -19,7 +25,9 @@ class AssessmentHistoryModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'questionnaireTitle': questionnaireTitle,
       'questionnaireId': questionnaireId,
+      'assesmentScore': assessmentScore, // Match server field
       'evaluationId': evaluationId,
       '_id': id,
     };

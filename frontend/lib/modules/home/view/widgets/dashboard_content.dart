@@ -15,7 +15,7 @@ class DashboardContent extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final history = user.assessmentHistory;
+    final history = user.assesmentHistory ?? [];
     final recentAssessments = history!.length >= 3
         ? history.reversed.take(3).toList()
         : history.reversed.toList(); // latest 3 or less
@@ -55,7 +55,8 @@ class DashboardContent extends StatelessWidget {
                 elevation: 3,
                 child: ListTile(
                   // You can update title or subtitle here if needed.
-                  title: Text("Evaluation ID: ${assessment.evaluationId}"),
+                  title: Text(assessment.questionnaireTitle),
+                  subtitle: Text('Score: ${assessment.assessmentScore.toString()}'),
                   onTap: () {
                     Navigator.push(
                       context,

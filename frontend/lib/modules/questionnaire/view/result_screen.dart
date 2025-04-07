@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/routes/app_routes.dart';
 
 class ResultScreen extends StatelessWidget {
   final Map<String, dynamic> result;
@@ -14,28 +15,37 @@ class ResultScreen extends StatelessWidget {
     final score = result['assesmentScore'];
 
     return Scaffold(
-      appBar: AppBar(title: const Text("AI Evaluation Result")),
+      appBar: AppBar(
+        title: const Text("AI Evaluation Result"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // ✅ Go back to Questionnaire List screen
+            Navigator.popUntil(context, ModalRoute.withName(AppRoutes.questionaryList));
+          },
+        ),
+      ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _infoTile("Sentiment", sentiment),
-              _infoTile("Risk Level", riskLevel),
-              _infoTile("Assessment Score", "$score"),
-              const SizedBox(height: 12),
-              const Text("Summary", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 6),
-              Text(summary, style: const TextStyle(fontSize: 16)),
-              const SizedBox(height: 16),
-              const Text("Suggestions", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ...suggestions.map((s) => ListTile(
-                    leading: const Icon(Icons.check_circle_outline),
-                    title: Text(s),
-                  )),
-            ],
-          ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _infoTile("Sentiment", sentiment),
+            _infoTile("Risk Level", riskLevel),
+            _infoTile("Assessment Score", "$score"),
+            const SizedBox(height: 12),
+            const Text("Summary", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text(summary, style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 16),
+            const Text("Suggestions", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ...suggestions.map(
+              (s) => ListTile(
+                leading: const Icon(Icons.check_circle_outline),
+                title: Text(s),
+              ),
+            ),
+          ],
         ),
       ),
     );
