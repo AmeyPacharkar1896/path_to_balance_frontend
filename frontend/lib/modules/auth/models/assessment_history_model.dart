@@ -15,11 +15,11 @@ class AssessmentHistory {
 
   factory AssessmentHistory.fromJson(Map<String, dynamic> json) {
     return AssessmentHistory(
-      questionnaireTitle: json['questionnaireTitle'],
-      questionnaireId: json['questionnaireId'],
-      assessmentScore: json['assesmentScore'], // typo handled below
-      evaluationId: json['evaluationId'],
-      id: json['_id'],
+      questionnaireTitle: json['questionnaireTitle'] ?? '',
+      questionnaireId: json['questionnaireId'] ?? '',
+      assessmentScore: json['assesmentScore'] ?? 0,
+      evaluationId: json['evaluationId'] ?? '',
+      id: json['_id'] ?? '',
     );
   }
 
@@ -27,7 +27,7 @@ class AssessmentHistory {
     return {
       'questionnaireTitle': questionnaireTitle,
       'questionnaireId': questionnaireId,
-      'assesmentScore': assessmentScore, // Match server field
+      'assesmentScore': assessmentScore,
       'evaluationId': evaluationId,
       '_id': id,
     };

@@ -30,7 +30,7 @@ class AssessmentListScreen extends StatelessWidget {
                       // If the questionnaire hasn't been loaded yet, trigger its loading.
                       if (pastAssessmentProvider.selectedQuestionnaire == null) {
                         pastAssessmentProvider
-                            .loadQuestionnaireById(assessment.questionnaireId ?? '');
+                            .loadQuestionnaireById(assessment.questionnaireId);
                       }
 
                       return ListTile(
@@ -51,8 +51,8 @@ class AssessmentListScreen extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => EvaluationDetailScreen(
                                 questionnaireId:
-                                    assessment.questionnaireId ?? '',
-                                evaluationId: assessment.evaluationId ?? '',
+                                    assessment.questionnaireId,
+                                evaluationId: assessment.evaluationId,
                               ),
                             ),
                           );

@@ -18,22 +18,25 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> initializeUser() async {
     final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
     final userId = prefs.getString('userId');
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-    if (userId != null && isLoggedIn) {
+    if (userJson != null && isLoggedIn && userId != null) {
       try {
-        log("[AuthProvider] Fetching user from backend using userId: $userId");
-        final user = await authService.getLoggedInUser(userId);
-        if (user != null) {
-          _user = user;
+        _user = UserModel.fromJson(jsonDecode(userJson));
+        // Optionally refresh from server
+        final updatedUser = await authService.getLoggedInUser(userId);
+        if (updatedUser != null) {
+          _user = updatedUser;
+          await prefs.setString('user', jsonEncode(updatedUser.toJson()));
           notifyListeners();
         }
       } catch (e) {
-        log("[AuthProvider] Error loading user from backend: $e");
+        log("[AuthProvider] Failed to load user: $e");
       }
     } else {
-      log("[AuthProvider] No valid userId or not logged in.");
+      log("[AuthProvider] No stored user found.");
     }
   }
 
@@ -44,15 +47,17 @@ class AuthProvider extends ChangeNotifier {
     String password,
   ) async {
     try {
-      final user = await authService.signup(
-        fullName,
-        userName,
-        email,
-        password,
-      );
+      final user = await authService.signup({
+        'fullName': fullName,
+        'userName': userName,
+        'email': email,
+        'password': password,
+      });
+
       if (user != null) {
         _user = user;
         final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(user.toJson()));
         await prefs.setString('userId', user.id);
         await prefs.setBool('isLoggedIn', true);
         notifyListeners();
@@ -69,6 +74,7 @@ class AuthProvider extends ChangeNotifier {
       if (user != null) {
         _user = user;
         final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(user.toJson()));
         await prefs.setString('userId', user.id);
         await prefs.setBool('isLoggedIn', true);
         notifyListeners();
@@ -81,10 +87,17 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> logout() async {
     if (_user != null) {
-      final success = await authService.logout(_user!.id);
+      try {
+        await authService.logout(_user!.id);
+      } catch (e) {
+        log('[AuthProvider] Logout error (ignored): $e');
+      }
+
       final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('user');
       await prefs.remove('userId');
       await prefs.setBool('isLoggedIn', false);
+
       _user = null;
       notifyListeners();
     }
@@ -94,10 +107,15 @@ class AuthProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     if (userId != null) {
-      final user = await authService.getLoggedInUser(userId);
-      if (user != null) {
-        _user = user;
-        notifyListeners();
+      try {
+        final user = await authService.getLoggedInUser(userId);
+        if (user != null) {
+          _user = user;
+          await prefs.setString('user', jsonEncode(user.toJson()));
+          notifyListeners();
+        }
+      } catch (e) {
+        log('[AuthProvider] Error refreshing user data: $e');
       }
     }
   }

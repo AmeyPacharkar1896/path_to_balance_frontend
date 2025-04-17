@@ -17,42 +17,38 @@ class AuthService {
   final String getUserEndpoint = "$baseUrl/api/v1/users/get-logged-in-user";
   final String updateUserEndpoint = "$baseUrl/api/v1/users/update-user";
 
-  Future<UserModel?> signup(
-    String fullName,
-    String userName,
-    String email,
-    String password,
-  ) async {
+  Future<UserModel?> signup(Map<String, dynamic> signupData) async {
     try {
-      final payload = jsonEncode({
-        "fullName": fullName,
-        "userName": userName,
-        "email": email,
-        "password": password,
-      });
-
-      final response = await client.post(
-        Uri.parse(signupEndpoint),
-        headers: {"Content-Type": "application/json"},
-        body: payload,
+      final url = Uri.parse(signupEndpoint);
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(signupData),
       );
 
-      log("[AuthService] Signup response: ${response.body}");
+      final res = jsonDecode(response.body);
+      print('[AuthService] Signup response: $res');
 
-      if (response.statusCode == 200) {
-        final res = jsonDecode(response.body);
-        final data = res['data'];
+      // ✅ Check if the server marked it as success
+      if (res['success'] == true && res['data'] != null) {
+        final user = UserModel.fromJson(res['data']);
 
-        final user = UserModel.fromJson(data);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user', jsonEncode(user.toJson()));
         await prefs.setString('userId', user.id);
+        await prefs.setBool('isLoggedIn', true);
+
         return user;
+      } else {
+        // ✅ Server returned success: false — log the message
+        final message = res['message'] ?? 'Signup failed';
+        print('[AuthService] Signup failed: $message');
+        throw Exception(message); // you can catch this in the UI if needed
       }
     } catch (e) {
-      log("[AuthService] Signup error: $e");
+      print('[AuthService] Signup exception: $e');
+      return null;
     }
-    return null;
   }
 
   Future<UserModel?> login(String userName, String password) async {

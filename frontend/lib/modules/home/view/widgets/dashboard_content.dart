@@ -16,7 +16,7 @@ class DashboardContent extends StatelessWidget {
     }
 
     final history = user.assesmentHistory ?? [];
-    final recentAssessments = history!.length >= 3
+    final recentAssessments = history.length >= 3
         ? history.reversed.take(3).toList()
         : history.reversed.toList(); // latest 3 or less
 
@@ -62,8 +62,8 @@ class DashboardContent extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => EvaluationDetailScreen(
-                          questionnaireId: assessment.questionnaireId ?? '',
-                          evaluationId: assessment.evaluationId ?? '',
+                          questionnaireId: assessment.questionnaireId,
+                          evaluationId: assessment.evaluationId,
                         ),
                       ),
                     );

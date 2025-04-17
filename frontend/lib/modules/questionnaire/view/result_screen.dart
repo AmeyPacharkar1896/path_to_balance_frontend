@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/routes/app_routes.dart';
 
+// ignore: must_be_immutable
 class ResultScreen extends StatelessWidget {
   final Map<String, dynamic> result;
   bool isRecentEvaluation;

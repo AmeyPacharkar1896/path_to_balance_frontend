@@ -5,9 +5,6 @@ import 'package:frontend/modules/auth/service/auth_service.dart';
 import 'package:frontend/modules/home/provider/home_provider.dart';
 import 'package:image_picker/image_picker.dart';
 
-
-final AuthService _authService = AuthService();
-
 class ProfileProvider extends ChangeNotifier {
   String _name = "";
   String _email = "";
@@ -22,10 +19,10 @@ class ProfileProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
   void syncFromUser(UserModel user) {
-    _name = user.fullName ?? "No Name";
+    _name = user.fullName;
     _email = user.email;
-    _bio = user.bio ?? "No Bio provided";
-    _avatar = user.avatar ?? "";
+    _bio = user.bio;
+    _avatar = user.avatar;
     notifyListeners();
   }
 

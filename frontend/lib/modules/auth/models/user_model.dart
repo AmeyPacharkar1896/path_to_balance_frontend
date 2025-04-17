@@ -30,13 +30,13 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['_id'],
-      fullName: json['fullName'],
-      userName: json['userName'],
-      bio: json['bio'],
-      email: json['email'],
-      authType: json['authType'],
-      role: json['role'],
+      id: json['_id'] ?? '',
+      fullName: json['fullName'] ?? '',
+      userName: json['userName'] ?? '',
+      bio: json['bio'] ?? '',
+      email: json['email'] ?? '',
+      authType: json['authType'] ?? '',
+      role: json['role'] ?? '',
       avatar: json['avatar'] ?? '',
       isLoggedIn: json['isLoggedIn'] ?? false,
       assesmentHistory: json['assesmentHistory'] != null
@@ -60,8 +60,8 @@ class UserModel {
       'role': role,
       'avatar': avatar,
       'isLoggedIn': isLoggedIn,
-      'assesmentHistory': assesmentHistory,
-      'recentAssesment': recentAssesment,
+      'assesmentHistory': assesmentHistory?.map((x) => x.toJson()).toList() ?? [],
+      'recentAssesment': recentAssesment?.toJson(),
     };
   }
 }
