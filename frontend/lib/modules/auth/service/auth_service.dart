@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:frontend/core/env_service.dart';
 import 'package:frontend/modules/auth/models/user_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/routes/app_routes.dart';
 
@@ -14,6 +15,7 @@ class AuthService {
   final String loginEndpoint = "$baseUrl/api/v1/users/login";
   final String logoutEndpoint = "$baseUrl/api/v1/users/logout";
   final String getUserEndpoint = "$baseUrl/api/v1/users/get-logged-in-user";
+  final String updateUserEndpoint = "$baseUrl/api/v1/users/update-user";
 
   Future<UserModel?> signup(
     String fullName,
@@ -55,10 +57,7 @@ class AuthService {
 
   Future<UserModel?> login(String userName, String password) async {
     try {
-      final payload = jsonEncode({
-        "userName": userName,
-        "password": password,
-      });
+      final payload = jsonEncode({"userName": userName, "password": password});
 
       final response = await client.post(
         Uri.parse(loginEndpoint),
@@ -130,5 +129,63 @@ class AuthService {
     if (!hasSeenOnboarding) return AppRoutes.onboarding;
     if (isLoggedIn && userId != null) return AppRoutes.home;
     return AppRoutes.authScreen;
+  }
+
+  Future<UserModel?> uploadAvatar(String userId, XFile imageFile) async {
+    try {
+      final request = http.MultipartRequest(
+        "POST",
+        Uri.parse(updateUserEndpoint),
+      );
+      request.fields['id'] = userId;
+      request.files.add(
+        await http.MultipartFile.fromPath('avatar', imageFile.path),
+      );
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      log("[AuthService] uploadAvatar response: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final res = jsonDecode(response.body);
+        return UserModel.fromJson(res['data']['user']);
+      }
+    } catch (e) {
+      log("[AuthService] uploadAvatar error: $e");
+    }
+    return null;
+  }
+
+  Future<UserModel?> updateUser(
+    String userId,
+    String name,
+    String email,
+    String bio,
+  ) async {
+    try {
+      final payload = jsonEncode({
+        "id": userId,
+        "fullName": name,
+        "email": email,
+        "bio": bio,
+      });
+
+      final response = await client.post(
+        Uri.parse(updateUserEndpoint),
+        headers: {"Content-Type": "application/json"},
+        body: payload,
+      );
+
+      log("[AuthService] updateUser response: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final res = jsonDecode(response.body);
+        return UserModel.fromJson(res['data']['user']);
+      }
+    } catch (e) {
+      log("[AuthService] updateUser error: $e");
+    }
+    return null;
   }
 }

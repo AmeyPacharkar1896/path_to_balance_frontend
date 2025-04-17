@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/home/view/widgets/profile_edit_dialog.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:frontend/modules/home/provider/home_provider.dart';
 import 'package:frontend/modules/home/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
-import 'profile_edit_dialog.dart';
 import 'package:frontend/modules/auth/provider/auth_provider.dart';
 import 'package:frontend/routes/app_routes.dart';
 
@@ -14,10 +16,11 @@ class ProfileContent extends StatefulWidget {
 }
 
 class _ProfileContentState extends State<ProfileContent> {
+  final ImagePicker _picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
-    // Once the widget is built, refresh the user data.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final homeProvider = Provider.of<HomeProvider>(context, listen: false);
       final profileProvider = Provider.of<ProfileProvider>(
@@ -32,6 +35,20 @@ class _ProfileContentState extends State<ProfileContent> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     await authProvider.logout();
     Navigator.pushReplacementNamed(context, AppRoutes.authScreen);
+  }
+
+  Future<void> _pickImage(BuildContext context) async {
+    final profileProvider = Provider.of<ProfileProvider>(
+      context,
+      listen: false,
+    );
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null && homeProvider.user != null) {
+      final userId = homeProvider.user!.id;
+      await profileProvider.updateAvatar(userId, pickedFile);
+    }
   }
 
   @override
@@ -68,20 +85,57 @@ class _ProfileContentState extends State<ProfileContent> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Profile Picture with white border.
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 4),
-                  ),
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundImage: profileProvider.avatar.isNotEmpty ? NetworkImage(profileProvider.avatar) : null
-                  ),
+                // Avatar with Upload Button
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 4),
+                      ),
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundImage:
+                            profileProvider.avatar.isNotEmpty
+                                ? File(profileProvider.avatar).existsSync()
+                                    ? FileImage(File(profileProvider.avatar))
+                                    : NetworkImage(profileProvider.avatar)
+                                        as ImageProvider
+                                : null,
+                        child:
+                            profileProvider.avatar.isEmpty
+                                ? const Icon(
+                                  Icons.person,
+                                  size: 60,
+                                  color: Colors.white70,
+                                )
+                                : null,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 4,
+                      right: 4,
+                      child: GestureDetector(
+                        onTap: () => _pickImage(context),
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.indigo,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: 20),
-                // Card for user information.
                 Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -129,14 +183,13 @@ class _ProfileContentState extends State<ProfileContent> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                // Edit Profile Button.
+
+                //Edit profile Button
                 ElevatedButton.icon(
-                  onPressed: () async {
-                    await showDialog(
+                  onPressed: () {
+                    showDialog(
                       context: context,
-                      builder: (BuildContext dialogContext) {
-                        return const ProfileEditDialog();
-                      },
+                      builder: (_) => const ProfileEditDialog(),
                     );
                   },
                   icon: const Icon(Icons.edit),
@@ -157,8 +210,10 @@ class _ProfileContentState extends State<ProfileContent> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 20),
-                // Log Out Button.
+
+                // Log Out Button
                 ElevatedButton.icon(
                   onPressed: () => _logout(context),
                   icon: const Icon(Icons.logout),

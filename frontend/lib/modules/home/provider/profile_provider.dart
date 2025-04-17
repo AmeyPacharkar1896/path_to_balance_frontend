@@ -1,7 +1,12 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/models/user_model.dart';
+import 'package:frontend/modules/auth/service/auth_service.dart';
 import 'package:frontend/modules/home/provider/home_provider.dart';
+import 'package:image_picker/image_picker.dart';
+
+
+final AuthService _authService = AuthService();
 
 class ProfileProvider extends ChangeNotifier {
   String _name = "";
@@ -14,7 +19,8 @@ class ProfileProvider extends ChangeNotifier {
   String get bio => _bio;
   String get avatar => _avatar;
 
-  // Sync profile data from a UserModel.
+  final AuthService _authService = AuthService();
+
   void syncFromUser(UserModel user) {
     _name = user.fullName ?? "No Name";
     _email = user.email;
@@ -23,32 +29,29 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Optionally update profile values manually.
-  void updateProfile({
+  Future<void> refreshProfile(HomeProvider homeProvider) async {
+    await homeProvider.loadUserData();
+    final updatedUser = homeProvider.user;
+    if (updatedUser != null) {
+      syncFromUser(updatedUser);
+    } else {
+      log('[ProfileProvider] refreshProfile failed');
+    }
+  }
+
+  Future<void> updateAvatar(String userId, XFile imageFile) async {
+    final user = await _authService.uploadAvatar(userId, imageFile);
+    if (user != null) syncFromUser(user);
+  }
+
+  Future<void> updateProfileRemote(String userId, {
     required String name,
     required String email,
     required String bio,
-  }) {
-    _name = name;
-    _email = email;
-    _bio = bio;
-    notifyListeners();
-    // Optionally, persist changes via an API call or local storage.
-  }
-
-  // Refresh profile data by fetching the latest user data using AuthService.
-  Future<void> refreshProfile(HomeProvider homeProvider) async {
-    await homeProvider.loadUserData(); // Ensure data is loaded first
-
-    final updatedUser = homeProvider.user;
-
+  }) async {
+    final updatedUser = await _authService.updateUser(userId, name, email, bio);
     if (updatedUser != null) {
-      log(updatedUser.toString());
       syncFromUser(updatedUser);
-    } else {
-      log(
-        '[ProfileProvider] refreshProfile failed: updatedUser is null from HomeProvider',
-      );
     }
   }
 }

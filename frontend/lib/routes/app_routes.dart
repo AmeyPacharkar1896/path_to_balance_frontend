@@ -10,9 +10,9 @@ import 'package:frontend/modules/questionnaire/view/questionanaire_view_model.da
 import 'package:frontend/modules/questionnaire/view/questionnaire_detail_wrapper.dart';
 import 'package:frontend/modules/questionnaire/view/questionnaire_list_screen.dart';
 import 'package:frontend/modules/questionnaire/view/result_screen.dart';
-import 'package:frontend/modules/tasks/pages/daily_tasks_page.dart' as daily;
-import 'package:frontend/modules/tasks/pages/task_content.dart';
-import 'package:frontend/modules/tasks/pages/weekly_tasks_page.dart' as weekly;
+import 'package:frontend/modules/tasks/view/daily_tasks_page.dart' as daily;
+import 'package:frontend/modules/tasks/view/task_content.dart';
+import 'package:frontend/modules/tasks/view/weekly_tasks_page.dart' as weekly;
 
 class AppRoutes {
   static const String onboarding = '/onboarding';

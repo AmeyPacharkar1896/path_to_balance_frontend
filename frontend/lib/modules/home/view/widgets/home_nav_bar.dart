@@ -4,7 +4,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/modules/home/provider/home_provider.dart';
 import 'package:frontend/modules/home/view/widgets/dashboard_content.dart';
-import 'package:frontend/modules/tasks/pages/task_content.dart';
+import 'package:frontend/modules/tasks/view/task_content.dart';
 import 'package:frontend/modules/home/view/widgets/profile_content.dart';
 
 class HomeNavBar extends StatelessWidget {

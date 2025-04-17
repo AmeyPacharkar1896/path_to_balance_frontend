@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../provider/profile_provider.dart';
+import '../../../home/provider/profile_provider.dart';
+import '../../../home/provider/home_provider.dart';
 
 class ProfileEditDialog extends StatefulWidget {
   const ProfileEditDialog({Key? key}) : super(key: key);
@@ -33,98 +34,58 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final profileProvider = Provider.of<ProfileProvider>(context, listen: false);
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    final userId = homeProvider.user?.id ?? "";
+
     return AlertDialog(
-      backgroundColor: Colors.white,
+      title: const Text("Edit Profile", style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text(
-        "Edit Profile",
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.indigo,
-        ),
-      ),
       content: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: "Name",
-                labelStyle: const TextStyle(color: Colors.indigo),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.indigo.shade200),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.indigo),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: "Email",
-                labelStyle: const TextStyle(color: Colors.indigo),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.indigo.shade200),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.indigo),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _bioController,
-              maxLines: 3,
-              decoration: InputDecoration(
-                labelText: "Bio",
-                labelStyle: const TextStyle(color: Colors.indigo),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.indigo.shade200),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.indigo),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
+            _buildTextField("Name", _nameController),
+            const SizedBox(height: 10),
+            _buildTextField("Email", _emailController),
+            const SizedBox(height: 10),
+            _buildTextField("Bio", _bioController, maxLines: 3),
           ],
         ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text(
-            "Cancel",
-            style: TextStyle(color: Colors.indigo),
-          ),
+          child: const Text("Cancel", style: TextStyle(color: Colors.indigo)),
         ),
         ElevatedButton(
-          onPressed: () {
-            final profileProvider =
-                Provider.of<ProfileProvider>(context, listen: false);
-            profileProvider.updateProfile(
+          onPressed: () async {
+            await profileProvider.updateProfileRemote(
+              userId,
               name: _nameController.text,
               email: _emailController.text,
               bio: _bioController.text,
             );
             Navigator.of(context).pop();
           },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.indigo,
-            foregroundColor: Colors.white,
-          ),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo),
           child: const Text("Save"),
         ),
       ],
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller, {int maxLines = 1}) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.indigo),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.indigo),
+        ),
+      ),
     );
   }
 }

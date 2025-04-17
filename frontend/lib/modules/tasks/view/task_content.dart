@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/tasks/pages/widgets/tasks_tiles.dart';
+import 'package:frontend/modules/tasks/view/widgets/tasks_tiles.dart';
 import 'package:frontend/routes/app_routes.dart';
 
 class TaskContent extends StatelessWidget {
