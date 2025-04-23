@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'package:frontend/modules/onboarding/view/widget/gradient_icon.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({Key? key}) : super(key: key);
 
   Future<void> _completeOnboarding(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
     Navigator.pushReplacementNamed(context, AppRoutes.authScreen);
   }
 

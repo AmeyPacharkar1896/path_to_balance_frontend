@@ -5,6 +5,7 @@ class AIResponseModel {
   final String riskLevel;
   final String summary;
   final int assessmentScore;
+  final List<String> currentStatus;
   final List<String> suggestions;
 
   AIResponseModel({
@@ -14,21 +15,37 @@ class AIResponseModel {
     required this.riskLevel,
     required this.summary,
     required this.assessmentScore,
+    required this.currentStatus,
     required this.suggestions,
   });
 
   factory AIResponseModel.fromJson(Map<String, dynamic> json) {
-    final eval = json['evaluationSummary'] ?? {};
+    final sentiment = json['sentiment'] ?? {};
+    final evaluationSummary = sentiment['evaluationSummary'] ?? {};
+
     return AIResponseModel(
-      userID: json['userID']?.toString() ?? '',
-      questionnaireID: json['questioannaireID']?.toString() ?? '',
-      sentiment: eval['sentiment']?.toString() ?? 'unknown',
-      riskLevel: eval['risk_level']?.toString() ?? 'unknown',
-      summary: eval['summary']?.toString() ?? '',
-      assessmentScore: eval['assesmentScore'] is int
-          ? eval['assesmentScore']
-          : int.tryParse(eval['assesmentScore']?.toString() ?? '0') ?? 0,
-      suggestions: (eval['suggestions'] as List<dynamic>?)
+      userID: sentiment['userID']?.toString() ?? '',
+      questionnaireID: sentiment['questioannaireID']?.toString() ?? '',
+      sentiment: evaluationSummary['sentiment']?.toString() ?? 'unknown',
+      riskLevel: evaluationSummary['risk_level']?.toString() ?? 'unknown',
+      summary: evaluationSummary['summary']?.toString() ?? '',
+      assessmentScore:
+          evaluationSummary['assesmentScore'] is int
+              ? evaluationSummary['assesmentScore']
+              : int.tryParse(
+                    evaluationSummary['assesmentScore']?.toString() ?? '0',
+                  ) ??
+                  0,
+      currentStatus:
+          evaluationSummary['currentStatus'] != null
+              ? evaluationSummary['currentStatus']
+                  .toString()
+                  .split(',')
+                  .map((s) => s.trim())
+                  .toList()
+              : [],
+      suggestions:
+          (evaluationSummary['suggestions'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
@@ -38,11 +55,12 @@ class AIResponseModel {
   Map<String, dynamic> toJson() {
     return {
       "userID": userID,
-      "questioannaireID": questionnaireID,
+      "questionnaireID": questionnaireID,
       "sentiment": sentiment,
-      "risk_level": riskLevel,
+      "riskLevel": riskLevel,
       "summary": summary,
-      "assesmentScore": assessmentScore,
+      "assessmentScore": assessmentScore,
+      "currentStatus": currentStatus,
       "suggestions": suggestions,
     };
   }

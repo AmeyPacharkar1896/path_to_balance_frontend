@@ -12,7 +12,7 @@ class UserModel {
   final String avatar;
   final bool isLoggedIn;
   final List<AssessmentHistory>? assesmentHistory;
-  final RecentAssessment? recentAssesment;
+  RecentAssessment? recentAssesment;
 
   UserModel({
     required this.id,
@@ -39,13 +39,18 @@ class UserModel {
       role: json['role'] ?? '',
       avatar: json['avatar'] ?? '',
       isLoggedIn: json['isLoggedIn'] ?? false,
-      assesmentHistory: json['assesmentHistory'] != null
-          ? List<AssessmentHistory>.from(
-              json['assesmentHistory'].map((x) => AssessmentHistory.fromJson(x)))
-          : [],
-      recentAssesment: json['recentAssesment'] != null
-          ? RecentAssessment.fromJson(json['recentAssesment'])
-          : null,
+      assesmentHistory:
+          json['assesmentHistory'] != null
+              ? List<AssessmentHistory>.from(
+                json['assesmentHistory'].map(
+                  (x) => AssessmentHistory.fromJson(x),
+                ),
+              )
+              : [],
+      recentAssesment:
+          json['recentAssesment'] != null
+              ? RecentAssessment.fromJson(json['recentAssesment'])
+              : null,
     );
   }
 
@@ -60,7 +65,8 @@ class UserModel {
       'role': role,
       'avatar': avatar,
       'isLoggedIn': isLoggedIn,
-      'assesmentHistory': assesmentHistory?.map((x) => x.toJson()).toList() ?? [],
+      'assesmentHistory':
+          assesmentHistory?.map((x) => x.toJson()).toList() ?? [],
       'recentAssesment': recentAssesment?.toJson(),
     };
   }

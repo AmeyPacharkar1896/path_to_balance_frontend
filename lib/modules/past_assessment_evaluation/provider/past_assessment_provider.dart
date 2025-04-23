@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:frontend/modules/past_assessment_evaluation/service/past_assessment_service.dart';
-import 'package:frontend/modules/questionnaire/model/questionnaire_detail_model.dart';
 import 'package:frontend/modules/questionnaire/model/ai_response_model.dart';
+import 'package:frontend/modules/questionnaire/model/questionnaire_detail_model.dart';
 import 'package:frontend/modules/questionnaire/service/questionnaire_service.dart';
 
 class PastAssessmentProvider with ChangeNotifier {
@@ -20,10 +20,8 @@ class PastAssessmentProvider with ChangeNotifier {
   bool get isLoadingEvaluation => _isLoadingEvaluation;
   Map<String, dynamic>? get evaluationResultMap => _evaluationResultMap;
 
-  /// Returns the questionnaire title, or an empty string if not loaded.
   String get questionnaireTitle => _selectedQuestionnaire?.title ?? '';
 
-  /// Loads questionnaire details by its [id] and updates the provider state.
   Future<void> loadQuestionnaireById(String id) async {
     _isLoading = true;
     notifyListeners();
@@ -36,12 +34,11 @@ class PastAssessmentProvider with ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
-  
-  /// Loads evaluation result by its [evaluationId] and converts it to a Map.
+
   Future<void> loadEvaluationById(String evaluationId) async {
     _isLoadingEvaluation = true;
     notifyListeners();
-    
+
     try {
       AIResponseModel? aiResponse = await _evaluationService.fetchEvaluationById(evaluationId);
       if (aiResponse != null) {

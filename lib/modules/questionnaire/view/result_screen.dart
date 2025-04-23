@@ -34,32 +34,24 @@ class ResultScreen extends StatelessWidget {
           onPressed: () async {
             try {
               final prefs = await SharedPreferences.getInstance();
-              // Use a null check operator with a default value instead of force unwrapping
-              bool hasSeenOnboarding =
-                  prefs.getBool('hasSeenOnboarding') ?? false;
-
-              log('hasSeenOnboarding: $hasSeenOnboarding');
+              bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
 
               if (hasSeenOnboarding) {
-                // Use pushReplacementNamed instead of popAndPushNamed
                 Navigator.pushReplacementNamed(context, AppRoutes.home);
               } else if (isRecentEvaluation) {
                 Navigator.pop(context);
               } else {
-                // Make sure this route exists in your route definitions
                 if (Navigator.canPop(context)) {
                   Navigator.popUntil(
                     context,
                     ModalRoute.withName(AppRoutes.questionaryList),
                   );
                 } else {
-                  // Fallback - go to home if can't pop
                   Navigator.pushReplacementNamed(context, AppRoutes.home);
                 }
               }
             } catch (e) {
               log('Error navigating back: $e');
-              // Fallback - just try to go back
               if (Navigator.canPop(context)) {
                 Navigator.pop(context);
               } else {

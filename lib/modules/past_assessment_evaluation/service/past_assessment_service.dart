@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:frontend/core/env_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/modules/questionnaire/model/ai_response_model.dart';
@@ -10,30 +11,21 @@ class PastAssessmentService {
 
   Future<AIResponseModel?> fetchEvaluationById(String evaluationId) async {
     try {
-      // Use GET method and pass the evaluationId as a query parameter.
       final uri = Uri.parse("$getEvaluationEndpoint/$evaluationId");
-      final response = await http.get(
-        uri,
-        headers: {"Content-Type": "application/json"},
-      );
-
+      final response = await http.get(uri, headers: {"Content-Type": "application/json"});
       log("[PastAssessmentService] Response: ${response.body}");
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> res = jsonDecode(response.body);
-        if (res['success'] == true &&
-            res['data'] != null &&
-            res['data']['evaluation'] != null) {
-          final evaluation = res['data']['evaluation'];
-          return AIResponseModel.fromJson(evaluation);
-        } else {
-          log("[PastAssessmentService] Invalid response structure: data/evaluation missing");
-          return null;
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        final eval = body['data']?['evaluation'];
+        if (eval != null) {
+          // Drill into nested evaluationSummary
+          final summaryJson = eval['evaluationSummary'] as Map<String, dynamic>;
+          summaryJson['_id'] = eval['_id'];
+          return AIResponseModel.fromJson(summaryJson);
         }
-      } else {
-        log("[PastAssessmentService] Non-200 status code: ${response.statusCode}");
-        return null;
       }
+      return null;
     } catch (e) {
       log("[PastAssessmentService] Error: $e");
       return null;
