@@ -24,19 +24,13 @@ class CustomTextField extends StatelessWidget {
                 obscureText: visibilityProvider.isObscured,
                 decoration: InputDecoration(
                   labelText: label,
-                  labelStyle: const TextStyle(color: Colors.indigo),
-                  border:
-                      OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 12.0,
-                    horizontal: 16.0,
-                  ),
+                  labelStyle: TextStyle(color: Colors.orange),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      visibilityProvider.isObscured
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: Colors.indigo,
+                      visibilityProvider.isObscured ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.orange,
                     ),
                     onPressed: visibilityProvider.toggleVisibility,
                   ),
@@ -48,13 +42,9 @@ class CustomTextField extends StatelessWidget {
             controller: controller,
             decoration: InputDecoration(
               labelText: label,
-              labelStyle: const TextStyle(color: Colors.indigo),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 16.0,
-              ),
+              labelStyle: TextStyle(color: Colors.orange),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             ),
           );
   }

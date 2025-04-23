@@ -14,12 +14,10 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.indigo,
+        backgroundColor: Color(0xFFD98324), // Orange color
         foregroundColor: Colors.white,
-        padding:
-            const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-        textStyle:
-            const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+        textStyle: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

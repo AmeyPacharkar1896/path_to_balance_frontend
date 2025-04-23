@@ -1,4 +1,3 @@
-// lib/modules/auth/view/auth_guard.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/service/auth_service.dart';
 
@@ -20,7 +19,6 @@ class AuthGuard extends StatelessWidget {
             body: Center(child: Text('Error: ${snapshot.error}')),
           );
         }
-        // When complete, navigate to the determined route.
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pushReplacementNamed(context, snapshot.data!);
         });

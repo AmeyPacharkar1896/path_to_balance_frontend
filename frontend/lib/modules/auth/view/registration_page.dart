@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/auth/view/widgets/custom_button.dart';
 import 'package:frontend/modules/auth/view/widgets/custom_text_field.dart';
@@ -16,10 +15,7 @@ class RegistrationPage extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _register(BuildContext context) async {
-    final authScreenState = Provider.of<AuthScreenState>(
-      context,
-      listen: false,
-    );
+    final authScreenState = Provider.of<AuthScreenState>(context, listen: false);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     authScreenState.setLoading(true);
@@ -46,28 +42,24 @@ class RegistrationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('inside registration page');
     return Scaffold(
       appBar: AppBar(
         title: const Text("Register"),
         centerTitle: true,
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.orange,
         foregroundColor: Colors.white,
       ),
-      body: Container(
+      body: Padding(
         padding: const EdgeInsets.all(24.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.indigo.shade100, Colors.indigo.shade50],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Color(0xFFEFDCAB), // Light Beige
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Consumer<AuthScreenState>(
-              builder: (context, authScreenState, child) {
-                return Column(
+          child: Consumer<AuthScreenState>(
+            builder: (context, authScreenState, child) {
+              return SingleChildScrollView(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     CustomTextField(
@@ -94,8 +86,8 @@ class RegistrationPage extends StatelessWidget {
                     if (authScreenState.errorMessage != null)
                       Text(
                         authScreenState.errorMessage!,
-                        style: const TextStyle(
-                          color: Colors.red,
+                        style: TextStyle(
+                          color: Colors.red, 
                           fontSize: 16.0,
                         ),
                         textAlign: TextAlign.center,
@@ -104,9 +96,9 @@ class RegistrationPage extends StatelessWidget {
                     authScreenState.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : CustomButton(
-                          text: "Register",
-                          onPressed: () => _register(context),
-                        ),
+                            text: "Register",
+                            onPressed: () => _register(context),
+                          ),
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () {
@@ -117,13 +109,13 @@ class RegistrationPage extends StatelessWidget {
                       },
                       child: const Text(
                         "Already have an account? Login",
-                        style: TextStyle(color: Colors.indigo),
+                        style: TextStyle(color: Colors.orange),
                       ),
                     ),
                   ],
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

@@ -9,13 +9,11 @@ import 'package:frontend/routes/app_routes.dart';
 class AuthScreen extends StatelessWidget {
   AuthScreen({Key? key}) : super(key: key);
 
-  // Create controllers as final fields.
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _login(BuildContext context) async {
-    final authScreenState =
-        Provider.of<AuthScreenState>(context, listen: false);
+    final authScreenState = Provider.of<AuthScreenState>(context, listen: false);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     authScreenState.setLoading(true);
@@ -49,24 +47,20 @@ class AuthScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Login"),
         centerTitle: true,
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.orange,
         foregroundColor: Colors.white,
-        
       ),
-      body: Container(
+      body: Padding(
         padding: const EdgeInsets.all(24.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.indigo.shade100, Colors.indigo.shade50],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Color(0xFFEFDCAB), // Light Beige
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Consumer<AuthScreenState>(
-              builder: (context, authScreenState, child) {
-                return Column(
+          child: Consumer<AuthScreenState>(
+            builder: (context, authScreenState, child) {
+              return SingleChildScrollView(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     CustomTextField(
@@ -83,8 +77,10 @@ class AuthScreen extends StatelessWidget {
                     if (authScreenState.errorMessage != null)
                       Text(
                         authScreenState.errorMessage!,
-                        style: const TextStyle(
-                            color: Colors.red, fontSize: 16.0),
+                        style: TextStyle(
+                          color: Colors.red, 
+                          fontSize: 16.0,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     const SizedBox(height: 16),
@@ -97,18 +93,17 @@ class AuthScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(
-                            context, AppRoutes.registration);
+                        Navigator.pushReplacementNamed(context, AppRoutes.registration);
                       },
                       child: const Text(
                         "Don't have an account? Register",
-                        style: TextStyle(color: Colors.indigo),
+                        style: TextStyle(color: Colors.orange),
                       ),
                     ),
                   ],
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),
