@@ -34,8 +34,10 @@ class TasksProvider extends ChangeNotifier {
         log('[TasksProvider] Loaded ${_dailyTasks.length} daily tasks');
         log('[TasksProvider] Loaded ${_weeklyTasks.length} weekly tasks');
 
-        _isDailyLoaded = true;
-        _isWeeklyLoaded = true;
+        // Update the flags based on the type of task loaded
+        if (_dailyTasks.isNotEmpty) _isDailyLoaded = true;
+        if (_weeklyTasks.isNotEmpty) _isWeeklyLoaded = true;
+
         notifyListeners();
         log('[TasksProvider] Notified listeners after loading tasks');
       } else {
@@ -52,13 +54,20 @@ class TasksProvider extends ChangeNotifier {
     if (userId == null) return;
 
     try {
-      final updatedTaskModel = await _taskService.toggleTaskStatus(
-        userId: userId,
-        taskId: taskId,
-      );
+      final updatedTaskModel = await _taskService.toggleTaskStatus(userId: userId, taskId: taskId);
 
-      _dailyTasks = updatedTaskModel.dailyTask;
-      _weeklyTasks = updatedTaskModel.weeklyTask;
+      if (isDaily) {
+        _dailyTasks = updatedTaskModel.dailyTask;
+      } else {
+        _weeklyTasks = updatedTaskModel.weeklyTask;
+      }
+
+      // Update the loaded flags based on whether tasks are loaded
+      if (isDaily) {
+        _isDailyLoaded = true;
+      } else {
+        _isWeeklyLoaded = true;
+      }
 
       notifyListeners();
     } catch (e) {

@@ -31,9 +31,10 @@ class TaskContent extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            TaskPage(isDaily: true, title: 'Daily Tasks'),
+                    builder: (context) => TaskPage(
+                      isDaily: true,
+                      title: 'Daily Tasks',
+                    ),
                   ),
                 );
               },
@@ -41,7 +42,17 @@ class TaskContent extends StatelessWidget {
             TaskTile(
               icon: Icons.calendar_view_week,
               label: 'Weekly Tasks',
-              routeName: '/weeklyTasks',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TaskPage(
+                      isDaily: false,
+                      title: 'Weekly Tasks',
+                    ),
+                  ),
+                );
+              },
             ),
             TaskTile(
               icon: Icons.history,

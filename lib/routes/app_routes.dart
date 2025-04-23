@@ -9,7 +9,6 @@ import 'package:frontend/modules/questionnaire/view/questionanaire_view_model.da
 import 'package:frontend/modules/questionnaire/view/questionnaire_detail_wrapper.dart';
 import 'package:frontend/modules/questionnaire/view/questionnaire_list_screen.dart';
 import 'package:frontend/modules/tasks/view/task_content.dart';
-import 'package:frontend/modules/tasks/view/weekly_tasks_page.dart' as weekly;
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -21,7 +20,6 @@ class AppRoutes {
   static const String questionaryList = '/questionary-list';
   static const String questionary = '/questionary';
   static const String result = '/result';
-  static const String weeklyTasks = '/weekly-tasks';
   static const String evaluationDetail = '/evaluation-detail';
   static const String assessmentHistory = '/assessment-history';
 
@@ -36,7 +34,6 @@ class AppRoutes {
         const QuestionanaireViewModel(child: QuestionnaireListScreen()),
     questionary: (context) => const QuestionnaireDetailWrapper(),
     // result: (context) => const ResultScreen(),
-    weeklyTasks: (context) => const weekly.WeeklyTasksPage(),
     assessmentHistory: (context) => const AssessmentListScreen(),
     // evaluationDetail: (context) => const EvaluationDetailScreen(),
   };

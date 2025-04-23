@@ -1,4 +1,3 @@
-// lib/modules/onboarding/view/onboarding_page.dart
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:frontend/routes/app_routes.dart';
@@ -28,57 +27,66 @@ class OnboardingPage extends StatelessWidget {
           globalBackgroundColor: theme.scaffoldBackgroundColor,
           pages: [
             PageViewModel(
-              title: "Welcome",
-              body:
-                  "Discover the amazing features of our app. Get started quickly and effortlessly!",
+              title: "Welcome to Mental Health Support",
+              body: "Start your journey to better mental health with personalized assessments and recommendations. Let's begin understanding your mental well-being.",
               image: GradientIcon(
-                icon: Icons.mobile_friendly,
+                icon: Icons.health_and_safety,  // Better suited for health and wellness
                 size: 175,
                 gradientColors: [primary, secondary],
               ),
               decoration: PageDecoration(
                 pageColor: theme.scaffoldBackgroundColor,
                 imagePadding: const EdgeInsets.only(top: 40),
-                contentMargin:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                titleTextStyle: textTheme.headlineLarge!
-                    .copyWith(color: primary),
+                contentMargin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                titleTextStyle: textTheme.headlineLarge!.copyWith(color: primary),
                 bodyTextStyle: textTheme.bodyMedium!,
               ),
             ),
             PageViewModel(
-              title: "Easy to Use",
-              body: "Our app is simple and intuitive.",
+              title: "Personalized Questionnaires",
+              body: "Answer simple questionnaires that evaluate your mental well-being. Based on your responses, we'll give you personalized insights and advice.",
               image: GradientIcon(
-                icon: Icons.touch_app,
+                icon: Icons.list_alt,  // Represents assessments and lists
                 size: 175,
                 gradientColors: [primary, secondary],
               ),
               decoration: PageDecoration(
                 pageColor: theme.scaffoldBackgroundColor,
                 imagePadding: const EdgeInsets.only(top: 40),
-                contentMargin:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                titleTextStyle: textTheme.headlineLarge!
-                    .copyWith(color: primary),
+                contentMargin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                titleTextStyle: textTheme.headlineLarge!.copyWith(color: primary),
                 bodyTextStyle: textTheme.bodyMedium!,
               ),
             ),
             PageViewModel(
-              title: "Get Started",
-              body: "Let's begin your journey!",
+              title: "Daily & Weekly Tasks",
+              body: "Receive daily and weekly tasks tailored to help you improve your mental health. Our goal is to support you with actionable steps.",
               image: GradientIcon(
-                icon: Icons.play_circle_fill,
+                icon: Icons.task_alt,  // Represents tasks and checklists
                 size: 175,
                 gradientColors: [primary, secondary],
               ),
               decoration: PageDecoration(
                 pageColor: theme.scaffoldBackgroundColor,
                 imagePadding: const EdgeInsets.only(top: 40),
-                contentMargin:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                titleTextStyle: textTheme.headlineLarge!
-                    .copyWith(color: primary),
+                contentMargin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                titleTextStyle: textTheme.headlineLarge!.copyWith(color: primary),
+                bodyTextStyle: textTheme.bodyMedium!,
+              ),
+            ),
+            PageViewModel(
+              title: "Start Your Journey",
+              body: "Take the first step towards a healthier mindset. Your journey to improved mental well-being begins now.",
+              image: GradientIcon(
+                icon: Icons.explore,  // Represents exploration and starting the journey
+                size: 175,
+                gradientColors: [primary, secondary],
+              ),
+              decoration: PageDecoration(
+                pageColor: theme.scaffoldBackgroundColor,
+                imagePadding: const EdgeInsets.only(top: 40),
+                contentMargin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                titleTextStyle: textTheme.headlineLarge!.copyWith(color: primary),
                 bodyTextStyle: textTheme.bodyMedium!,
               ),
             ),
