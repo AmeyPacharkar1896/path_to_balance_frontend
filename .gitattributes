@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 *.dill filter=lfs diff=lfs merge=lfs -text
 *.pdb filter=lfs diff=lfs merge=lfs -text
 *.dll filter=lfs diff=lfs merge=lfs -text
+=======
+frontend/windows/flutter/ephemeral/flutter_windows.dll.pdb filter=lfs diff=lfs merge=lfs -text
+>>>>>>> cc7478a9c16bae812d984c76f327d66e1d019697
