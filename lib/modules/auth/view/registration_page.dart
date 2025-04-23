@@ -5,6 +5,7 @@ import 'package:frontend/modules/auth/view/widgets/custom_text_field.dart';
 import 'package:frontend/modules/auth/provider/auth_provider.dart';
 import 'package:frontend/modules/auth/provider/auth_screen_state.dart';
 import 'package:frontend/routes/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationPage extends StatelessWidget {
   RegistrationPage({Key? key}) : super(key: key);
@@ -15,11 +16,18 @@ class RegistrationPage extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _register(BuildContext context) async {
-    final authScreenState = Provider.of<AuthScreenState>(context, listen: false);
+    final authScreenState = Provider.of<AuthScreenState>(
+      context,
+      listen: false,
+    );
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
 
     authScreenState.setLoading(true);
     authScreenState.setError(null);
+    int letsSee = await prefs.getBool('hasSeenOnboarding')! ? 1 : 0;
+    late bool hasSeenOnboarding;
+    hasSeenOnboarding = letsSee == 1;
 
     try {
       await authProvider.signup(
@@ -28,7 +36,9 @@ class RegistrationPage extends StatelessWidget {
         _emailController.text.trim(),
         _passwordController.text,
       );
-      if (authProvider.isAuthenticated) {
+      if (hasSeenOnboarding) {
+        Navigator.pushReplacementNamed(context, AppRoutes.gotoFirstAssessment);
+      } else if (authProvider.isAuthenticated && !hasSeenOnboarding) {
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       } else {
         authScreenState.setError('Registration failed. Please try again.');
@@ -119,9 +129,9 @@ class RegistrationPage extends StatelessWidget {
                     authScreenState.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : CustomButton(
-                            text: "Register",
-                            onPressed: () => _register(context),
-                          ),
+                          text: "Register",
+                          onPressed: () => _register(context),
+                        ),
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () {

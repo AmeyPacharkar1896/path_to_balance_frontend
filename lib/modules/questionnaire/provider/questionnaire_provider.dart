@@ -53,10 +53,12 @@ class QuestionnaireProvider extends ChangeNotifier {
     notifyListeners();
     try {
       _selectedQuestionnaire = await _service.fetchQuestionnaireById(id);
+      log(_selectedQuestionnaire.toString());
       _currentQuestionIndex = 0;
       _selectedOption = null;
       _responses.clear();
     } catch (e) {
+      log(e.toString());
       _selectedQuestionnaire = null;
     }
     _isLoading = false;
@@ -88,54 +90,60 @@ class QuestionnaireProvider extends ChangeNotifier {
 
   // Submit all responses and return AI analysis result as a Map.
   Future<Map<String, dynamic>?> submitQuestionnaire(String userId) async {
-  log('[submitQuestionnaire] Called with userId: $userId');
+    log('[submitQuestionnaire] Called with userId: $userId');
 
-  if (_selectedOption != null && selectedQuestionnaire != null) {
-    final questionText = selectedQuestionnaire!.questions[_currentQuestionIndex].question;
-    final optionsList = selectedQuestionnaire!.options;
-    final selectedIndex = optionsList.indexOf(_selectedOption!) + 1;
+    if (_selectedOption != null && selectedQuestionnaire != null) {
+      final questionText =
+          selectedQuestionnaire!.questions[_currentQuestionIndex].question;
+      final optionsList = selectedQuestionnaire!.options;
+      final selectedIndex = optionsList.indexOf(_selectedOption!) + 1;
 
-    log('[submitQuestionnaire] Selected answer for "$questionText" is index $selectedIndex');
-    _responses.add({
-      "question": questionText,
-      "answer": selectedIndex,
-    });
-  } else {
-    log('[submitQuestionnaire] Missing selectedOption or selectedQuestionnaire');
+      log(
+        '[submitQuestionnaire] Selected answer for "$questionText" is index $selectedIndex',
+      );
+      _responses.add({"question": questionText, "answer": selectedIndex});
+    } else {
+      log(
+        '[submitQuestionnaire] Missing selectedOption or selectedQuestionnaire',
+      );
+    }
+
+    final responseModel = QuestionnaireResponseModel(
+      userID: userId,
+      questionnaireID: selectedQuestionnaire?.id ?? "null",
+      evaluationScore:
+          _responses
+              .map(
+                (e) => EvaluationScore(
+                  question: e["question"],
+                  answer: e["answer"],
+                ),
+              )
+              .toList(),
+    );
+
+    log(
+      '[submitQuestionnaire] Prepared response model: ${jsonEncode(responseModel.toJson())}',
+    );
+
+    final aiData = await _service.submitQuestionnaireResponse(responseModel);
+    log('[submitQuestionnaire] AI analysis result: ${jsonEncode(aiData)}');
+
+    if (aiData != null) {
+      log('[submitQuestionnaire] AI response received successfully');
+      _aiResponse = aiData;
+      notifyListeners();
+      return {
+        "sentiment": aiData.sentiment,
+        "risk_level": aiData.riskLevel,
+        "summary": aiData.summary,
+        "assesmentScore": aiData.assessmentScore,
+        "suggestions": aiData.suggestions,
+      };
+    } else {
+      log('[submitQuestionnaire] AI response is null');
+    }
+
+    return null;
   }
-
-  final responseModel = QuestionnaireResponseModel(
-    userID: userId,
-    questionnaireID: selectedQuestionnaire?.id ?? "null",
-    evaluationScore: _responses.map(
-      (e) => EvaluationScore(
-        question: e["question"],
-        answer: e["answer"],
-      ),
-    ).toList(),
-  );
-
-  log('[submitQuestionnaire] Prepared response model: ${jsonEncode(responseModel.toJson())}');
-
-  final aiData = await _service.submitQuestionnaireResponse(responseModel);
-  log('[submitQuestionnaire] AI analysis result: ${jsonEncode(aiData)}');
-
-  if (aiData != null) {
-    log('[submitQuestionnaire] AI response received successfully');
-    _aiResponse = aiData;
-    notifyListeners();
-    return {
-      "sentiment": aiData.sentiment,
-      "risk_level": aiData.riskLevel,
-      "summary": aiData.summary,
-      "assesmentScore": aiData.assessmentScore,
-      "suggestions": aiData.suggestions,
-    };
-  } else {
-    log('[submitQuestionnaire] AI response is null');
-  }
-
-  return null;
-}
-
 }

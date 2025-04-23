@@ -26,12 +26,12 @@ class QuestionnaireService {
 
   Future<QuestionnaireDetailModel> fetchQuestionnaireById(String id) async {
     final url = Uri.parse("$baseUrl/api/v1/queationnaire/get/$id");
+    log(url.toString());
     final response = await http.get(url);
-
+    log(response.statusCode.toString());
     if (response.statusCode == 200) {
       final body = json.decode(response.body);
-      final data = body['data']['questionnaire'];
-
+      final data = body['data']['questionnaire'][0];
       return QuestionnaireDetailModel.fromJson(data);
     } else {
       throw Exception("Failed to load questionnaire details");

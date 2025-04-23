@@ -9,6 +9,7 @@ import 'package:frontend/modules/questionnaire/view/questionanaire_view_model.da
 import 'package:frontend/modules/questionnaire/view/questionnaire_detail_wrapper.dart';
 import 'package:frontend/modules/questionnaire/view/questionnaire_list_screen.dart';
 import 'package:frontend/modules/tasks/view/task_content.dart';
+import 'package:frontend/modules/home/view/gotoFirstAssessment.dart';
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String result = '/result';
   static const String evaluationDetail = '/evaluation-detail';
   static const String assessmentHistory = '/assessment-history';
+  static const String gotoFirstAssessment = '/goto-first-assessment';
 
   static Map<String, WidgetBuilder> routes = {
     auth: (context) => const AuthGuard(),
@@ -30,11 +32,13 @@ class AppRoutes {
     onboarding: (context) => const OnboardingPage(),
     home: (context) => const HomeScreen(),
     taskContent: (context) => const TaskContent(),
-    questionaryList: (context) =>
-        const QuestionanaireViewModel(child: QuestionnaireListScreen()),
+    questionaryList:
+        (context) =>
+            const QuestionanaireViewModel(child: QuestionnaireListScreen()),
     questionary: (context) => const QuestionnaireDetailWrapper(),
     // result: (context) => const ResultScreen(),
     assessmentHistory: (context) => const AssessmentListScreen(),
+    gotoFirstAssessment: (context) => const Gotofirstassessment(),
     // evaluationDetail: (context) => const EvaluationDetailScreen(),
   };
 }
