@@ -4,21 +4,35 @@ import 'package:frontend/modules/questionnaire/view/result_screen.dart';
 import 'package:frontend/modules/questionnaire/provider/questionnaire_provider.dart';
 import 'package:frontend/modules/auth/provider/auth_provider.dart';
 
-class QuestionnaireDetailScreen extends StatelessWidget {
+class QuestionnaireDetailScreen extends StatefulWidget {
   final String questionnaireId;
 
   const QuestionnaireDetailScreen({super.key, required this.questionnaireId});
+
+  @override
+  State<QuestionnaireDetailScreen> createState() =>
+      _QuestionnaireDetailScreenState();
+}
+
+class _QuestionnaireDetailScreenState extends State<QuestionnaireDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Use a post-frame callback to avoid triggering during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final questionnaireProvider = Provider.of<QuestionnaireProvider>(
+        context,
+        listen: false,
+      );
+      questionnaireProvider.loadQuestionnaireById(widget.questionnaireId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final questionnaireProvider = Provider.of<QuestionnaireProvider>(context);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final theme = Theme.of(context);
-
-    // Trigger loading
-    if (questionnaireProvider.selectedQuestionnaire == null) {
-      questionnaireProvider.loadQuestionnaireById(questionnaireId);
-    }
 
     final question =
         questionnaireProvider

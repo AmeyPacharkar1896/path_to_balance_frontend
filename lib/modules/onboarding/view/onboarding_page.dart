@@ -9,7 +9,6 @@ class OnboardingPage extends StatelessWidget {
 
   Future<void> _completeOnboarding(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('hasSeenOnboarding', true);
     Navigator.pushReplacementNamed(context, AppRoutes.authScreen);
   }
 
@@ -28,65 +27,93 @@ class OnboardingPage extends StatelessWidget {
           pages: [
             PageViewModel(
               title: "Welcome to Mental Health Support",
-              body: "Start your journey to better mental health with personalized assessments and recommendations. Let's begin understanding your mental well-being.",
+              body:
+                  "Start your journey to better mental health with personalized assessments and recommendations. Let's begin understanding your mental well-being.",
               image: GradientIcon(
-                icon: Icons.health_and_safety,  // Better suited for health and wellness
+                icon:
+                    Icons
+                        .health_and_safety, // Better suited for health and wellness
                 size: 175,
                 gradientColors: [primary, secondary],
               ),
               decoration: PageDecoration(
                 pageColor: theme.scaffoldBackgroundColor,
                 imagePadding: const EdgeInsets.only(top: 40),
-                contentMargin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                titleTextStyle: textTheme.headlineLarge!.copyWith(color: primary),
+                contentMargin: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                titleTextStyle: textTheme.headlineLarge!.copyWith(
+                  color: primary,
+                ),
                 bodyTextStyle: textTheme.bodyMedium!,
               ),
             ),
             PageViewModel(
               title: "Personalized Questionnaires",
-              body: "Answer simple questionnaires that evaluate your mental well-being. Based on your responses, we'll give you personalized insights and advice.",
+              body:
+                  "Answer simple questionnaires that evaluate your mental well-being. Based on your responses, we'll give you personalized insights and advice.",
               image: GradientIcon(
-                icon: Icons.list_alt,  // Represents assessments and lists
+                icon: Icons.list_alt, // Represents assessments and lists
                 size: 175,
                 gradientColors: [primary, secondary],
               ),
               decoration: PageDecoration(
                 pageColor: theme.scaffoldBackgroundColor,
                 imagePadding: const EdgeInsets.only(top: 40),
-                contentMargin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                titleTextStyle: textTheme.headlineLarge!.copyWith(color: primary),
+                contentMargin: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                titleTextStyle: textTheme.headlineLarge!.copyWith(
+                  color: primary,
+                ),
                 bodyTextStyle: textTheme.bodyMedium!,
               ),
             ),
             PageViewModel(
               title: "Daily & Weekly Tasks",
-              body: "Receive daily and weekly tasks tailored to help you improve your mental health. Our goal is to support you with actionable steps.",
+              body:
+                  "Receive daily and weekly tasks tailored to help you improve your mental health. Our goal is to support you with actionable steps.",
               image: GradientIcon(
-                icon: Icons.task_alt,  // Represents tasks and checklists
+                icon: Icons.task_alt, // Represents tasks and checklists
                 size: 175,
                 gradientColors: [primary, secondary],
               ),
               decoration: PageDecoration(
                 pageColor: theme.scaffoldBackgroundColor,
                 imagePadding: const EdgeInsets.only(top: 40),
-                contentMargin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                titleTextStyle: textTheme.headlineLarge!.copyWith(color: primary),
+                contentMargin: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                titleTextStyle: textTheme.headlineLarge!.copyWith(
+                  color: primary,
+                ),
                 bodyTextStyle: textTheme.bodyMedium!,
               ),
             ),
             PageViewModel(
               title: "Start Your Journey",
-              body: "Take the first step towards a healthier mindset. Your journey to improved mental well-being begins now.",
+              body:
+                  "Take the first step towards a healthier mindset. Your journey to improved mental well-being begins now.",
               image: GradientIcon(
-                icon: Icons.explore,  // Represents exploration and starting the journey
+                icon:
+                    Icons
+                        .explore, // Represents exploration and starting the journey
                 size: 175,
                 gradientColors: [primary, secondary],
               ),
               decoration: PageDecoration(
                 pageColor: theme.scaffoldBackgroundColor,
                 imagePadding: const EdgeInsets.only(top: 40),
-                contentMargin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                titleTextStyle: textTheme.headlineLarge!.copyWith(color: primary),
+                contentMargin: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                titleTextStyle: textTheme.headlineLarge!.copyWith(
+                  color: primary,
+                ),
                 bodyTextStyle: textTheme.bodyMedium!,
               ),
             ),
@@ -99,10 +126,7 @@ class OnboardingPage extends StatelessWidget {
             style: textTheme.bodyMedium!.copyWith(color: primary),
           ),
           next: Icon(Icons.arrow_forward, color: primary),
-          done: Text(
-            "Done",
-            style: textTheme.labelLarge,
-          ),
+          done: Text("Done", style: textTheme.labelLarge),
           dotsDecorator: DotsDecorator(
             activeColor: primary,
             color: theme.colorScheme.onBackground.withOpacity(0.3),
