@@ -1,6 +1,8 @@
 # 🧠 Path to Balance - An AI-Powered Mental Health Screening App
 
-![Path to Balance Demo](https://github.com/user-attachments/assets/192bc0e3-bdbd-4bdb-935f-cffd19459d61)
+<p align="center">
+<img src="https://github.com/user-attachments/assets/192bc0e3-bdbd-4bdb-935f-cffd19459d61" width="350">
+</p>
 
 Path to Balance is a cross-platform Flutter application designed to provide users with immediate, accessible mental health screening. The app uses structured questionnaires and a powerful AI backend to deliver personalized psychological evaluations, helping users understand their mental state and providing actionable suggestions for well-being.
 
